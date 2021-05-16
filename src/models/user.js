@@ -1,20 +1,34 @@
 const { DataTypes, DATE } = require('sequelize');
 const Sequelize = require('../sequelize');
 
-user = Sequelize.define(
-    'user', {
-    username: {
+const User = Sequelize.define(
+    'users', {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    firstName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+    },
+    lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    role: {
+        type: DataTypes.ENUM('Student', 'Teacher', 'Admin'),
+        allowNull: false,
+    },
+    status: {
+        type: DataTypes.ENUM('Active', 'Inactive', 'Graduated', 'Left'),
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-    },
-    name: {
-        type: DataTypes.STRING,
     },
     password_salt: {
         type: DataTypes.STRING,
@@ -28,25 +42,6 @@ user = Sequelize.define(
     timestamps: true,
     paranoid: true,
     underscored: true,
-},
-);
+});
 
-initialize = (models) => {
-
-    models.user.prototype.toJSON = function () {
-        const values = { ...this.get() };
-
-        delete values.password_salt;
-        delete values.password_hash;
-
-        return values;
-    };
-
-    // models.user.prototype.setPassword = function (password) {
-    //     const { hash, salt } = createSaltHashPassword(password);
-    //     this.password_salt = salt;
-    //     this.password_hash = hash;
-    // };
-};
-
-module.exports = { model: user, initialize }
+module.exports = User

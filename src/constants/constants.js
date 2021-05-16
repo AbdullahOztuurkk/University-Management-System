@@ -4,7 +4,6 @@ const constants = {
     // Application
     PORT: process.env.PORT,
     NODE_ENV: process.env.NODE_ENV,
-
     // Database
     DB_USER: process.env.DB_USER,
     DB_NAME: process.env.DB_NAME,

@@ -1,25 +1,37 @@
 const express = require('express');
 const morgan = require('morgan');
 const constants = require('./constants/constants');
-
-const models = require('./models');
+const colors = require('colors');
 
 var app = express();
 
 app.use(express.json())
 
-// db connection
 
-//Routes Settings
-// app.use('/api/users', UserRoutes);
-// app.use('/api/lecturers', LecturerRoutes);
-// app.use('/api/lessons', LessonRoutes);
-// app.use('/api/lecturerlessons', LecturerLessonRoutes);
-// app.use('/api/grades', GradeRoutes);
 
 var port = constants.PORT || 5000;
 
-if (constants.NODE_ENV === 'development')
+if (constants.NODE_ENV === 'development') {
+    // Morgan logger
     app.use(morgan('tiny'));
 
-app.listen(port, console.log(`Server Running on PORT : ${port} `))
+    // Sync database columns
+    const faculty = require('./models/faculty');
+    faculty.sync({ force: true });
+
+    const department = require('./models/department');
+    department.sync({ force: true });
+
+    const lesson = require('./models/lesson');
+    lesson.sync({ force: true });
+
+    const user = require('./models/user');
+    user.sync({ force: true });
+
+    console.log(`All models are synced`.green.bold);
+}
+
+
+
+
+app.listen(port, console.log(`Server Running on PORT : ${port} `.green.bold))

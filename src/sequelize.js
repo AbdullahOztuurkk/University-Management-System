@@ -1,4 +1,4 @@
-const {Sequelize} = require('sequelize');
+const { Sequelize } = require('sequelize');
 const constants = require('./constants/constants');
 
 
@@ -9,12 +9,13 @@ const connection = new Sequelize(
     {
         host: constants.DB_HOST,
         dialect: 'postgres',
+        logging: false,
     },
 );
 
 connection.authenticate()
     .then(() => {
-        console.log('Postgres Connected');
-    }).catch((error) => console.log(error));
+        console.log('Postgres Connected Successfully'.green.bold);
+    }).catch((error) => console.log(`${error}`.red.bold));
 
 module.exports = connection;
