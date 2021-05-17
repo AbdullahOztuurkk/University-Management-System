@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Faculty {
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  Department Department[]
+
+  @@index([id])
+}
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  faculty   Faculty  @relation(fields: [facultyId], references: [id])
+  facultyId Int
+  lessons   Lesson[]
+  users     User[]
+
+  @@index([id, facultyId])
+}
+
+model Lesson {
+  id              Int        @id @default(autoincrement())
+  name            String
+  credit          Int
+  department      Department @relation(fields: [departmentId], references: [id])
+  departmentId    Int
+  users           User[]
+  seasonStartYear DateTime
+
+  @@index([id, departmentId])
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  firtName    String
+  lastName    String
+  role        Role
+  status      Status
+  pwdHash     String
+  pwdSalt     String
+  departments Department[]
+  lessons     Lesson[]
+
+  @@index([id, email])
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+  LEFT
+}
+
+enum Season {
+  AUTUMN
+  SPRING
+  SUMMER
+}
