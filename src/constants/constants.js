@@ -12,6 +12,11 @@ const constants = {
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_PORT: process.env.DB_PORT,
     DB_URL: process.env.DB_URL,
+
+    // JWT
+    JWT_SECRET: process.env.JWT_SECRET,
+    JWT_EXPIRE: process.env.JWT_EXPIRE,
+    COOKIE_EXPIRE: process.env.COOKIE_EXPIRE,
 }
 
 module.exports = constants;
