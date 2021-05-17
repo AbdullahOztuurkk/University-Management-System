@@ -3,6 +3,7 @@ const constants = require('../../constants/constants');
 const bcyrpt = require('bcryptjs');
 
 exports.User = class {
+    id;
     firstName;
     lastName;
     role;
@@ -28,4 +29,8 @@ exports.User = class {
             expiresIn: constants.JWT_EXPIRE,
         });
     }
+}
+
+exports.fromJson = (json) => {
+    return Object.assign(new this.User(),)
 }
