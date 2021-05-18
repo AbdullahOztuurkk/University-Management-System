@@ -3,6 +3,10 @@ const constants = require('../../constants/constants');
 const bcyrpt = require('bcryptjs');
 
 exports.User = class {
+    constructor(object) {
+        Object.assign(this, object);
+    }
+    id;
     firstName;
     lastName;
     role;
@@ -14,7 +18,7 @@ exports.User = class {
 
     async hashPassword() {
         this.pwdSalt = await bcyrpt.genSalt(10);
-        this.pwdHash = await bcyrpt.hash(this.pwd, this.pwdSalt);
+        this.pwdHash = await bcyrpt.hash(this.pwd.toString(), this.pwdSalt);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);
@@ -28,4 +32,8 @@ exports.User = class {
             expiresIn: constants.JWT_EXPIRE,
         });
     }
+}
+
+exports.fromJson = (json) => {
+    return Object.assign(new this.User(),)
 }

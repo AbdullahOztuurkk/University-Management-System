@@ -44,7 +44,7 @@ model Lesson {
 model User {
   id          Int          @id @default(autoincrement())
   email       String       @unique
-  firtName    String
+  firstName   String
   lastName    String
   role        Role
   status      Status
