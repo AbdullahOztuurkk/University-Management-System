@@ -18,7 +18,7 @@ exports.User = class {
 
     async hashPassword() {
         this.pwdSalt = await bcyrpt.genSalt(10);
-        this.pwdHash = await bcyrpt.hash(this.pwd, this.pwdSalt);
+        this.pwdHash = await bcyrpt.hash(this.pwd.toString(), this.pwdSalt);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);

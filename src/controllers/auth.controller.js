@@ -17,6 +17,12 @@ exports.login = asyncHandler(async (req, res, next) => {
     const user = await client.user.findUnique({
         where: {
             email: email,
+        },
+        select: {
+            id: true,
+            email: true,
+            pwdHash: true,
+            pwdSalt: true,
         }
     });
 
@@ -34,7 +40,28 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.me = asyncHandler(async (req, res, next) => {
+    const user = await client.user.findUnique({
+        where: {
+            id: req.user.id,
+        },
+        select: {
+            id: true,
+            email: true,
+            status: true,
+            role: true,
+            firstName: true,
+            lastName: true,
+        }
+    });
 
+    if (!user) {
+        return next(new ErrorResponse('Kullanıcı bulunamadı', 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        data: user,
+    })
 });
 
 const sendTokenResponse = (user, statusCode, res) => {
