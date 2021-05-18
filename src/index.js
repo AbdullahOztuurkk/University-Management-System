@@ -5,6 +5,7 @@ const colors = require('colors');
 const cookieParser = require('cookie-parser');
 const auth = require('./routes/auth.route');
 const { connectDb } = require('./config/prisma-config');
+const errorHandler = require('./middleware/error');
 
 var app = express();
 
@@ -20,6 +21,8 @@ if (constants.NODE_ENV === 'development') {
 connectDb();
 
 app.use('/v1/auth', auth);
+
+app.use(errorHandler);
 
 var port = constants.PORT || 5000;
 

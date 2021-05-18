@@ -3,6 +3,9 @@ const constants = require('../../constants/constants');
 const bcyrpt = require('bcryptjs');
 
 exports.User = class {
+    constructor(object) {
+        Object.assign(this, object);
+    }
     id;
     firstName;
     lastName;
