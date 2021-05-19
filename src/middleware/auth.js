@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 exports.jwtAuthentication = asyncHandler(async (req, res, next) => {
     const token = req.cookies.token;
 
-    if (!token) {
+    if (!token || token === 'none') {
         return next(new ErrorResponse('Lütfen giriş yapınız.', 401));
     }
 
@@ -30,10 +30,15 @@ exports.jwtAuthentication = asyncHandler(async (req, res, next) => {
 
 
     } catch (error) {
-        return next(new ErrorResponse('Oturum hatası', 500));
+        return next(new ErrorResponse('Oturum hatası.', 500));
     }
 });
 
 exports.authorize = (...roles) => {
-    // Code here...
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return next(new ErrorResponse('Bu işlem için yetkiniz bulunmamaktadır.', 401))
+        }
+        next();
+    }
 }

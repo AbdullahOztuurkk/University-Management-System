@@ -17,7 +17,8 @@
     "express": "^4.17.1",
     "express-joi-validation": "^5.0.0",
     "joi": "^17.4.0",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.6.0"
   },
   "devDependencies": {
     "colors": "^1.4.0",

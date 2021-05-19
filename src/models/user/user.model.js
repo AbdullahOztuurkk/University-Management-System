@@ -16,9 +16,16 @@ exports.User = class {
     pwdHash;
     pwdSalt;
 
+    set setPwd(newPwd) {
+        this.pwd = newPwd;
+    }
+
     async hashPassword() {
+        console.log(this.pwd);
         this.pwdSalt = await bcyrpt.genSalt(10);
+        console.log(this.pwdSalt);
         this.pwdHash = await bcyrpt.hash(this.pwd.toString(), this.pwdSalt);
+        console.log(this.pwdHash);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);
@@ -32,8 +39,4 @@ exports.User = class {
             expiresIn: constants.JWT_EXPIRE,
         });
     }
-}
-
-exports.fromJson = (json) => {
-    return Object.assign(new this.User(),)
 }
