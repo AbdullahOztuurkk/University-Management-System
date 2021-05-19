@@ -40,22 +40,27 @@ model UserDepartment {
 }
 
 model Lesson {
-  id              Int          @id @default(autoincrement())
-  name            String
-  credit          Int
-  department      Department   @relation(fields: [departmentId], references: [id])
-  departmentId    Int
-  seasonStartYear DateTime
-  UserLesson      UserLesson[]
+  id           Int          @id @default(autoincrement())
+  name         String
+  credit       Int
+  code         String
+  grade        Int
+  status       LessonStatus
+  department   Department   @relation(fields: [departmentId], references: [id])
+  departmentId Int
+  UserLesson   UserLesson[]
 
   @@index([id, departmentId])
 }
 
 model UserLesson {
-  userId   Int
-  user     User   @relation(fields: [userId], references: [id])
-  lessonId Int
-  lesson   Lesson @relation(fields: [lessonId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  lessonId  Int
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  startYear DateTime
+  endYear   DateTime
+  season    Season
 
   @@id([userId, lessonId])
   @@index([lessonId])
@@ -68,7 +73,7 @@ model User {
   firstName      String
   lastName       String
   role           Role
-  status         Status
+  status         UserStatus
   pwdHash        String
   pwdSalt        String
   UserLesson     UserLesson[]
@@ -84,11 +89,16 @@ enum Role {
   ADMIN
 }
 
-enum Status {
+enum UserStatus {
   ACTIVE
   INACTIVE
   GRADUATED
   LEFT
+}
+
+enum LessonStatus {
+  OPEN
+  CLOSE
 }
 
 enum Season {
