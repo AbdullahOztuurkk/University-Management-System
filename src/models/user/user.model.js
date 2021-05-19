@@ -16,10 +16,6 @@ exports.User = class {
     pwdHash;
     pwdSalt;
 
-    set setPwd(newPwd) {
-        this.pwd = newPwd;
-    }
-
     async hashPassword() {
         console.log(this.pwd);
         this.pwdSalt = await bcyrpt.genSalt(10);
