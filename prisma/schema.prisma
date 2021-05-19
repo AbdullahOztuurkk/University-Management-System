@@ -19,41 +19,63 @@ model Faculty {
 }
 
 model Department {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  faculty   Faculty  @relation(fields: [facultyId], references: [id])
-  facultyId Int
-  lessons   Lesson[]
-  users     User[]
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  faculty        Faculty          @relation(fields: [facultyId], references: [id])
+  facultyId      Int
+  lessons        Lesson[]
+  UserDepartment UserDepartment[]
 
   @@index([id, facultyId])
 }
 
+model UserDepartment {
+  userId       Int
+  user         User       @relation(fields: [userId], references: [id])
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  @@id([userId, departmentId])
+  @@index([departmentId])
+}
+
 model Lesson {
-  id              Int        @id @default(autoincrement())
+  id              Int          @id @default(autoincrement())
   name            String
   credit          Int
-  department      Department @relation(fields: [departmentId], references: [id])
+  department      Department   @relation(fields: [departmentId], references: [id])
   departmentId    Int
-  users           User[]
   seasonStartYear DateTime
+  UserLesson      UserLesson[]
 
   @@index([id, departmentId])
 }
 
-model User {
-  id          Int          @id @default(autoincrement())
-  email       String       @unique
-  firstName   String
-  lastName    String
-  role        Role
-  status      Status
-  pwdHash     String
-  pwdSalt     String
-  departments Department[]
-  lessons     Lesson[]
+model UserLesson {
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+  lessonId Int
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
 
-  @@index([id, email])
+  @@id([userId, lessonId])
+  @@index([lessonId])
+  @@index([userId])
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  firstName      String
+  lastName       String
+  role           Role
+  status         Status
+  pwdHash        String
+  pwdSalt        String
+  UserLesson     UserLesson[]
+  UserDepartment UserDepartment[]
+
+  @@index([id])
+  @@index([email])
 }
 
 enum Role {

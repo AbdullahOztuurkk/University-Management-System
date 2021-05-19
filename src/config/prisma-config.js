@@ -4,7 +4,7 @@ const constants = require('../constants/constants');
 const prismaClient = new PrismaClient();
 
 exports.connectDb = async () => {
-    main;
+    await main;
 }
 
 exports.client = prismaClient;

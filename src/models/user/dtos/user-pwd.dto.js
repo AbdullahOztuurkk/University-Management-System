@@ -2,13 +2,10 @@ const joi = require('joi');
 const ErrorResponse = require('../../../utils/ErrorResponse');
 const options = require('../../dto-options');
 
-function userLoginDto(req, res, next) {
+function userPwdDto(req, res, next) {
 
     const schema = {
         body: joi.object({
-            email: joi.string()
-                .email()
-                .required(),
             pwd: joi.string()
                 .min(4)
                 .max(16)
@@ -26,4 +23,4 @@ function userLoginDto(req, res, next) {
 
 }
 
-module.exports = userLoginDto;
+module.exports = userPwdDto;
