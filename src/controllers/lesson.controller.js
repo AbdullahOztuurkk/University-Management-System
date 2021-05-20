@@ -93,34 +93,6 @@ exports.UpdateLesson = asyncHandler(async (req, res, next) => {
     });
 });
 
-exports.UpdateLesson = asyncHandler(async (req, res, next) => {
-
-    const lessonId=req.body.id;
-
-    const lesson = await client.Lesson.findFirst({
-        where:{
-            id:lessonId,
-        }
-    });
-
-    if(lesson ==null){
-        return next(new ErrorResponse('Geçersiz ders'),400);
-    }
-
-    const UpdatedLesson= await client.lesson.update({
-        where:{
-            id:lessonId,
-        },
-        data:req.body,
-    })
-    /* TODO: This code can be improved */
-
-    res.status(200).json({
-        success:true,
-        data:UpdatedLesson,
-    });
-});
-
 exports.CreateLesson = asyncHandler(async (req, res, next) => {
 
     //Code here
