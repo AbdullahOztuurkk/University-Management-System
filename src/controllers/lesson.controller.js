@@ -5,7 +5,7 @@ const ErrorResponse = require('../utils/ErrorResponse');
 
 exports.getLessons = asyncHandler(async (req, res, next) => {
 
-    const lessons = await client.Lesson.findMany({
+    const lessons = await client.lesson.findMany({
         include:{
             department:{
                 select:{
@@ -24,17 +24,18 @@ exports.getLessons = asyncHandler(async (req, res, next) => {
 
 exports.getLesson = asyncHandler(async (req, res, next) => {
 
-    const lessonId=req.body.id;
+    const lessonId=req.params.id;
 
-    const lesson = await client.Lesson.findFirst({
+    const lesson = await client.lesson.findFirst({
+        where:{
+            id:Number(lessonId),
+        },
         include:{
             department:{
                 select:{
                     name:true,
                 },
-                where:{
-                    id:lessonId
-                }
+                
             }
         }
     });
@@ -53,7 +54,7 @@ exports.DeleteLesson = asyncHandler(async (req, res, next) => {
 
     const lessonId=req.body.id;
 
-    const deletedlesson = await client.Lesson.delete({
+    const deletedlesson = await client.lesson.delete({
         where:{
             id:lessonId
         }
@@ -69,7 +70,7 @@ exports.UpdateLesson = asyncHandler(async (req, res, next) => {
 
     const lessonId=req.body.id;
 
-    const lesson = await client.Lesson.findFirst({
+    const lesson = await client.lesson.findFirst({
         where:{
             id:lessonId,
         }
@@ -95,6 +96,26 @@ exports.UpdateLesson = asyncHandler(async (req, res, next) => {
 
 exports.CreateLesson = asyncHandler(async (req, res, next) => {
 
-    //Code here
+    const departmentId=req.body.departmentId;
+
+    const department = await client.department.findFirst({
+        where:{
+            id:Number(departmentId),
+        }
+    });
+
+    if(department ==null){
+        return next(new ErrorResponse('Geçersiz ders'),400);
+    }
+
+    const createdLesson= await client.lesson.create({
+        data:req.body,
+    })
+    /* TODO: This code can be improved */
+
+    res.status(200).json({
+        success:true,
+        data:UpdatedLesson,
+    });
     
 });
