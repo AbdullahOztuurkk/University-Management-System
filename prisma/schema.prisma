@@ -40,13 +40,13 @@ model UserDepartment {
 }
 
 model Lesson {
-  id           Int          @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   name         String
   credit       Int
   code         String
   grade        Int
-  status       LessonStatus
-  department   Department   @relation(fields: [departmentId], references: [id])
+  status       LessonStatus? @default(CLOSE)
+  department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
   UserLesson   UserLesson[]
 

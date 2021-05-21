@@ -11,4 +11,6 @@ exports.Lesson = class {
     grade;
     status;
     departmentId;
+    department; // Relation field
+    userLessons; // Relation field
 }
