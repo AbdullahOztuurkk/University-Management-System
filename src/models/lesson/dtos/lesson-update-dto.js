@@ -2,28 +2,22 @@ const joi = require('joi');
 const ErrorResponse = require('../../../utils/ErrorResponse');
 const options = require('../../dto-options');
 
-function lessonCreateDto(req, res, next) {
+function lessonUpdateDto(req, res, next) {
 
     const schema = {
         body: joi.object({
             name: joi.string()
-                .min(4)
-                .required(),
+                .min(4),
             credit: joi.number()
                 .min(1)
-                .max(11)
-                .required(),
-            code: joi.string()
-                .required(),
+                .max(11),
+            code: joi.string(),
             status: joi.string()
                 .valid('OPEN', 'CLOSED'), // Optional not required
             grade: joi.number()
                 .min(1)
-                .max(6)
-                .required(),
-            departmentId: joi.number()
-                .required(),
-
+                .max(6),
+            departmentId: joi.number(),
         }),
     }
 
@@ -37,4 +31,4 @@ function lessonCreateDto(req, res, next) {
 
 }
 
-module.exports = lessonCreateDto;
+module.exports = lessonUpdateDto;

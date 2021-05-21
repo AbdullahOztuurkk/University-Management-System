@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Lesson" ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "status" SET DEFAULT E'CLOSE';

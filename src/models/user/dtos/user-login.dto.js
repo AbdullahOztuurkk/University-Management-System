@@ -19,7 +19,7 @@ function userLoginDto(req, res, next) {
     const { error, value } = schema.body.validate(req.body, options);
 
     if (error) {
-        next(new ErrorResponse(`${error.message}`, 400));
+        return next(new ErrorResponse(`${error.message}`, 400));
     }
     req.body = value;
     next();
