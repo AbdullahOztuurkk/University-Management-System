@@ -12,8 +12,8 @@ function facultyUpdateDto(req, res, next) {
 
     const { error, value } = schema.body.validate(req.body, options);
 
-    if (!error) {
-        return next(new ErrorResponse(`${error.message}`, 400))
+    if (error) {
+        next(new ErrorResponse(`${error.message}`, 400))
     }
     req.body = value;
     next();
