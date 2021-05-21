@@ -1,8 +1,8 @@
 const express = require('express');
-const { getAll, getById, create,deleteById,updateById } = require('../controllers/lesson.controller');
+const { getAll, getById, create, deleteById, updateById } = require('../controllers/lesson.controller');
 const { jwtAuthentication, authorize } = require('../middleware/auth');
-const UpdateDto = require('../models/lesson/dtos/lesson-update-dto');
-const CreateDto = require('../models/lesson/dtos/lesson-create.dto');
+const updateDto = require('../models/lesson/dtos/lesson-update-dto');
+const createDto = require('../models/lesson/dtos/lesson-create.dto');
 
 
 const router = express.Router();
@@ -14,10 +14,10 @@ router.use(authorize('ADMIN'));
 
 router.route('/:id')
     .get(getById)
-    .patch(UpdateDto, updateById)
+    .patch(updateDto, updateById)
     .delete(deleteById);
 router.route('/')
-    .post(CreateDto, create)
+    .post(createDto, create)
     .get(getAll);
 
 module.exports = router;
