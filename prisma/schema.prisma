@@ -11,20 +11,20 @@ generator client {
 }
 
 model Faculty {
-  id         Int          @id @default(autoincrement())
-  name       String       @unique
-  Department Department[]
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  departments Department[]
 
   @@index([id])
 }
 
 model Department {
-  id             Int              @id @default(autoincrement())
-  name           String           @unique
-  faculty        Faculty          @relation(fields: [facultyId], references: [id])
-  facultyId      Int
-  lessons        Lesson[]
-  UserDepartment UserDepartment[]
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  faculty         Faculty          @relation(fields: [facultyId], references: [id])
+  facultyId       Int
+  lessons         Lesson[]
+  userDepartments UserDepartment[]
 
   @@index([id, facultyId])
 }
@@ -48,7 +48,7 @@ model Lesson {
   status       LessonStatus? @default(CLOSE)
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  UserLesson   UserLesson[]
+  userLessons  UserLesson[]
 
   @@index([id, departmentId])
 }
@@ -68,16 +68,16 @@ model UserLesson {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
-  email          String           @unique
-  firstName      String
-  lastName       String
-  role           Role
-  status         UserStatus
-  pwdHash        String
-  pwdSalt        String
-  UserLesson     UserLesson[]
-  UserDepartment UserDepartment[]
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
+  firstName       String
+  lastName        String
+  role            Role
+  status          UserStatus
+  pwdHash         String
+  pwdSalt         String
+  userLessons     UserLesson[]
+  userDepartments UserDepartment[]
 
   @@index([id])
   @@index([email])
