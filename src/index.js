@@ -5,6 +5,7 @@ const colors = require('colors');
 const cookieParser = require('cookie-parser');
 const auth = require('./routes/auth.route');
 const faculty = require('./routes/faculty.route')
+const department = require('./routes/department.route');
 const { connectDb } = require('./config/prisma-config');
 const errorHandler = require('./middleware/error');
 
@@ -21,8 +22,10 @@ if (constants.NODE_ENV === 'development') {
 
 connectDb();
 
+
 app.use('/v1/auth', auth);
 app.use('/v1/faculty', faculty);
+app.use('/v1/department', department);
 
 app.use(errorHandler);
 

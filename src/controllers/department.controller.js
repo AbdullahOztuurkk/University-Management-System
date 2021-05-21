@@ -1,13 +1,12 @@
-const ErrorResponse = require("../utils/ErrorResponse");
-const { client } = require('../config/prisma-config');
-const { Faculty } = require('../models/faculty/faculty.model');
-const asyncHandler = require('../middleware/async');
-const { default: slugify } = require("slugify");
+const { client } = require("../config/prisma-config");
+const asyncHandler = require("../middleware/async");
+const { Department } = require('../models/department/department.model');
+const { default: slugify } = require('slugify');
 
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const faculty = await client.faculty.findUnique({
+    const department = await client.department.findUnique({
         where: {
             id: id,
         },
@@ -15,28 +14,29 @@ exports.getById = asyncHandler(async (req, res, next) => {
             id: true,
             name: true,
             slugifyName: true,
-            departments: {
+            lessons: {
                 select: {
                     id: true,
                     name: true,
-                    slugifyName: true,
+                    grade: true,
+                    code: true,
                 },
-            },
+            }
         },
 
     });
 
     res.status(200).json({
         success: true,
-        datas: faculty,
+        datas: department,
         // Departments counts here...
-        // Number of students counts here...
+        // Number of users of departments here...
     });
 
 });
 
 exports.getAll = asyncHandler(async (req, res, next) => {
-    const faculty = await client.faculty.findMany({
+    const departments = await client.department.findMany({
         select: {
             id: true,
             name: true,
@@ -45,25 +45,25 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     });
 
 
-
     res.status(200).json({
         success: true,
-        datas: faculty,
-        // Faculties counts here... (Will be changed with pagination)...
-        // Department counts here...
-        // Number of students of faculties here...
+        datas: departments,
+        // Lessons counts here...
     });
 });
 
 exports.create = asyncHandler(async (req, res, next) => {
 
-    const facultyModel = new Faculty(req.body);
-    facultyModel.slugifyName = slugify(facultyModel.name, {
+    const departmentModel = new Department(req.body);
+    departmentModel.slugifyName = slugify(departmentModel.name, {
         lower: true,
     });
 
-    const created = await client.faculty.create({
-        data: facultyModel,
+    console.log(departmentModel);
+    console.log(typeof departmentModel);
+
+    const created = await client.department.create({
+        data: departmentModel,
     });
 
     res.status(200).json({
@@ -76,18 +76,19 @@ exports.create = asyncHandler(async (req, res, next) => {
 exports.updateById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const facultyModel = new Faculty(req.body);
-    if (facultyModel.name) {
-        facultyModel.slugifyName = slugify(facultyModel.name, {
+    const departmentModel = new Department(req.body);
+    if (departmentModel.name) {
+        departmentModel.slugifyName = slugify(departmentModel.name, {
             lower: true
         });
     }
+    console.log();
 
-    const updated = await client.faculty.update({
+    const updated = await client.department.update({
         where: {
             id: id,
         },
-        data: facultyModel,
+        data: departmentModel,
     });
 
     res.status(200).json({
@@ -99,7 +100,7 @@ exports.updateById = asyncHandler(async (req, res, next) => {
 exports.deleteById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const deleted = await client.faculty.delete({
+    const deleted = await client.department.delete({
         where: {
             id: id,
         },
