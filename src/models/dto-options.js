@@ -1,6 +1,6 @@
 const options = {
     abortEarly: false,
-    allowUnknown: true,
+    allowUnknown: false,
     stripUnknown: true
 }
 
