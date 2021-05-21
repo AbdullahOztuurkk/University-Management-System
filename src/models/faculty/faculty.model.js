@@ -1,6 +1,6 @@
 const constants = require('../../constants/constants');
 
-exports.Lesson = class {
+exports.Faculty = class {
     constructor(object) {
         Object.assign(this, object);
     }
