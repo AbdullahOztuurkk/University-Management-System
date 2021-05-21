@@ -12,7 +12,8 @@ generator client {
 
 model Faculty {
   id          Int          @id @default(autoincrement())
-  name        String       @unique
+  name        String
+  slugifyName String       @unique
   departments Department[]
 
   @@index([id])
@@ -20,7 +21,8 @@ model Faculty {
 
 model Department {
   id              Int              @id @default(autoincrement())
-  name            String           @unique
+  name            String
+  slugifyName     String           @unique
   faculty         Faculty          @relation(fields: [facultyId], references: [id])
   facultyId       Int
   lessons         Lesson[]
@@ -43,7 +45,7 @@ model Lesson {
   id           Int           @id @default(autoincrement())
   name         String
   credit       Int
-  code         String
+  code         String        @unique
   grade        Int
   status       LessonStatus? @default(CLOSE)
   department   Department    @relation(fields: [departmentId], references: [id])

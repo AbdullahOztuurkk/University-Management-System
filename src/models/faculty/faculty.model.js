@@ -6,5 +6,6 @@ exports.Lesson = class {
     }
     id;
     name;
+    slugifyName;
     departments; // Relation field
 }
