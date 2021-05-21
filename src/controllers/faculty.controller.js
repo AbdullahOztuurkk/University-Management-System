@@ -30,6 +30,7 @@ exports.getById = asyncHandler(async (req, res, next) => {
         success: true,
         datas: faculty,
         // Departments counts here...
+        // Number of students counts here...
     });
 
 });
@@ -40,21 +41,17 @@ exports.getAll = asyncHandler(async (req, res, next) => {
             id: true,
             name: true,
             slugifyName: true,
-            departments: {
-                select: {
-                    id: true,
-                    name: true,
-                    slugifyName: true,
-                },
-            },
         },
     });
+
 
 
     res.status(200).json({
         success: true,
         datas: faculty,
-        // Faculties counts here...
+        // Faculties counts here... (Will be changed with pagination)...
+        // Department counts here...
+        // Number of students of faculties here...
     });
 });
 
@@ -64,9 +61,6 @@ exports.create = asyncHandler(async (req, res, next) => {
     facultyModel.slugifyName = slugify(facultyModel.name, {
         lower: true,
     });
-
-    console.log(facultyModel);
-    console.log(typeof facultyModel);
 
     const created = await client.faculty.create({
         data: facultyModel,
@@ -88,7 +82,6 @@ exports.updateById = asyncHandler(async (req, res, next) => {
             lower: true
         });
     }
-    console.log();
 
     const updated = await client.faculty.update({
         where: {
