@@ -16,7 +16,7 @@ router.route('/:id')
     .get(getById)
     .patch(updateDto, updateById)
     .delete(deleteById);
-router.route('/')
+router.route('/')   // v1/faculty/:facultyId/departments post get
     .post(createDto, create)
     .get(getAll);
 
