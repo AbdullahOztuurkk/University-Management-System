@@ -64,7 +64,7 @@ model UserLesson {
   startYear DateTime
   endYear   DateTime
   season    Season
-  result    LessonResult
+  result    LessonResult @default(NOTRESULT)
   average   Int          @default(0)
   exams     Exam[]
 

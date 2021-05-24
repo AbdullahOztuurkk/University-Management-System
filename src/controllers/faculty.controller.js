@@ -1,4 +1,3 @@
-const ErrorResponse = require("../utils/ErrorResponse");
 const { client } = require('../config/prisma-config');
 const { Faculty } = require('../models/faculty/faculty.model');
 const asyncHandler = require('../middleware/async');
@@ -29,8 +28,6 @@ exports.getById = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         datas: faculty,
-        // Departments counts here...
-        // Number of students counts here...
     });
 
 });

@@ -1,7 +1,6 @@
 const { client } = require('../config/prisma-config');
 const asyncHandler = require('../middleware/async');
 const { Lesson } = require('../models/lesson/lesson.model');
-const ErrorResponse = require('../utils/ErrorResponse');
 
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
@@ -119,6 +118,6 @@ exports.updateById = asyncHandler(async (req, res, next) => {
     });
 });
 
-exports.assignTeacher = asyncHandler(async (req, res, next) => {
-
-})
+exports.open = asyncHandler(async (req, res, next) => {
+    // Creates userlesson and assing a teacher
+});
