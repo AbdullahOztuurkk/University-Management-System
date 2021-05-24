@@ -5,7 +5,8 @@ const options = require('../../dto-options');
 function UserLessonCreateDto(req, res, next) {
     const schema = {
         body: joi.object({
-            // Code here...
+            userId: joi.number()
+                .required()
         }),
     }
 

@@ -47,7 +47,7 @@ model Lesson {
   credit       Int
   code         String        @unique
   grade        Int
-  status       LessonStatus? @default(CLOSE)
+  status       LessonStatus? @default(TIMEOUT)
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
   userLessons  UserLesson[]
@@ -56,17 +56,16 @@ model Lesson {
 }
 
 model UserLesson {
-  id        Int          @id @default(autoincrement())
-  userId    Int
-  user      User         @relation(fields: [userId], references: [id])
-  lessonId  Int
-  lesson    Lesson       @relation(fields: [lessonId], references: [id])
-  startYear DateTime
-  endYear   DateTime
-  season    Season
-  result    LessonResult @default(NOTRESULT)
-  average   Int          @default(0)
-  exams     Exam[]
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  user       User         @relation(fields: [userId], references: [id])
+  lessonId   Int
+  lesson     Lesson       @relation(fields: [lessonId], references: [id])
+  seasonYear String
+  season     Season
+  result     LessonResult @default(NOTRESULT)
+  average    Int          @default(0)
+  exams      Exam[]
 
   @@index([lessonId])
   @@index([userId])
@@ -122,7 +121,7 @@ enum ExamType {
 
 enum LessonStatus {
   OPEN
-  CLOSE
+  TIMEOUT
 }
 
 enum LessonResult {

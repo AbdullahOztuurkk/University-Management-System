@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const constants = require('../../constants/constants');
 const bcyrpt = require('bcryptjs');
+const { default: slugify } = require('slugify');
 
 exports.User = class {
     constructor(object) {
@@ -19,11 +20,9 @@ exports.User = class {
     userDepartments; // relation field;
 
     async hashPassword() {
-        console.log(this.pwd);
+        const personalPwd = slugify(this.firstName, { replacement: '' });
         this.pwdSalt = await bcyrpt.genSalt(10);
-        console.log(this.pwdSalt);
-        this.pwdHash = await bcyrpt.hash(this.pwd.toString(), this.pwdSalt);
-        console.log(this.pwdHash);
+        this.pwdHash = await bcyrpt.hash(personalPwd, this.pwdSalt);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);
@@ -36,5 +35,10 @@ exports.User = class {
         return jwt.sign({ id: this.id }, constants.JWT_SECRET, {
             expiresIn: constants.JWT_EXPIRE,
         });
+    }
+
+    assignInformaations() {
+        this.email = slugify(String(this.firstName + this.lastName + this.role + this.id + '@university.com'), { lower: true });
+        this.status = 'ACTIVE';
     }
 }
