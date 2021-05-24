@@ -18,6 +18,7 @@ exports.User = class {
     pwdSalt;
     userLessons; // relation field;
     userDepartments; // relation field;
+    departmentId; // To register at initialCreate
 
     async hashPassword() {
         const personalPwd = slugify(this.firstName, { replacement: '' });
