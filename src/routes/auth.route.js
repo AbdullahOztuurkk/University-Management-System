@@ -1,7 +1,6 @@
 const express = require('express');
 const { login, me, forgotPassword, resetPassword, logout } = require('../controllers/auth.controller');
 const { jwtAuthentication } = require('../middleware/auth');
-const { createValidator } = require('express-joi-validation');
 const loginDto = require('../models/user/dtos/user-login.dto');
 const emailDto = require('../models/user/dtos/user-email.dto');
 const pwdDto = require('../models/user/dtos/user-pwd.dto');

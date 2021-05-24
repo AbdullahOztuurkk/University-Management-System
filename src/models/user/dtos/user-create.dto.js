@@ -6,7 +6,14 @@ function userCreateDto(req, res, next) {
 
     const schema = {
         body: joi.object({
-            // Code here...
+            firstName: joi.string()
+                .required(),
+            lastName: joi.string()
+                .required(),
+            role: joi.string()
+                .valid('ADMIN', 'TEACHER', 'STUDENT')
+                .required(),
+            departmentId: joi.number(),
         }),
     }
 

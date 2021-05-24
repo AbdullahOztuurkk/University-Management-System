@@ -2,7 +2,7 @@ const constants = require("../../constants/constants");
 
 exports.Department = class {
     constructor(object) {
-        Object.assign(object);
+        Object.assign(this, object);
     }
     id;
     name;

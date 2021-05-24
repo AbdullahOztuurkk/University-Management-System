@@ -53,6 +53,7 @@ exports.me = asyncHandler(async (req, res, next) => {
             firstName: true,
             lastName: true,
         }
+        // Bulunduğu sezona ait dersler burada dönülebilir.
     });
 
     if (!user) {

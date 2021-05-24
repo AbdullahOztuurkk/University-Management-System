@@ -1,4 +1,3 @@
-const ErrorResponse = require("../utils/ErrorResponse");
 const { client } = require('../config/prisma-config');
 const { Faculty } = require('../models/faculty/faculty.model');
 const asyncHandler = require('../middleware/async');
@@ -29,29 +28,32 @@ exports.getById = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         datas: faculty,
-        // Departments counts here...
-        // Number of students counts here...
     });
 
 });
 
 exports.getAll = asyncHandler(async (req, res, next) => {
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     const faculty = await client.faculty.findMany({
         select: {
             id: true,
             name: true,
             slugifyName: true,
         },
+        skip: skip,
+        take: limit,
+        // TODO: total data count 
     });
 
-
+    // TODO: pagination headers 
 
     res.status(200).json({
         success: true,
         datas: faculty,
-        // Faculties counts here... (Will be changed with pagination)...
-        // Department counts here...
-        // Number of students of faculties here...
     });
 });
 
