@@ -32,7 +32,10 @@ exports.getById = asyncHandler(async (req, res, next) => {
         },
         select: {
             id: true,
-            // Code here
+            firstName:true,
+            lastName:true,
+            status:true,
+            email:true
         }
     });
 
@@ -57,6 +60,10 @@ exports.getAll = asyncHandler(async (req, res, next) => {
                     user: {
                         select: {
                             id: true,
+                            firstName:true,
+                            lastName:true,
+                            status:true,
+                            email:true
                         }
                     }
                 }
@@ -72,14 +79,43 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 
 exports.update = asyncHandler(async (req, res, next) => {
 
+    const id = parseInt(req.params.id);
+
+    const userModel = new User(req.body);
+
+    const updated = await client.user.update({
+        where: {
+            id: id,
+        },
+        data: userModel,
+    });
+
+    res.status(200).json({
+        success: true,
+        data: updated,
+    });
+
 });
 
 exports.delete = asyncHandler(async (req, res, next) => {
 
+    const id = parseInt(req.params.id);
+
+    const deleted = await client.user.delete({
+        where: {
+            id: id,
+        },
+    });
+
+    res.status(200).json({
+        success: true,
+        message: `${deleted.name} başarıyla silindi.`,
+    })
+
 });
 
 exports.getJoinedLessons = asyncHandler(async (req, res, next) => {
-
+    
 });
 
 exports.joinOpenedLesson = asyncHandler(async (req, res, next) => {
