@@ -13,8 +13,8 @@ exports.getById = asyncHandler(async (req, res, next) => {
         select: {
             id: true,
             name: true,
-            code:true,
-            credit:true,
+            code: true,
+            credit: true,
             department: {
                 select: {
                     id: true,
@@ -32,37 +32,46 @@ exports.getById = asyncHandler(async (req, res, next) => {
     });
 
 });
-
+// Child of department
 exports.getAll = asyncHandler(async (req, res, next) => {
-    
+
+    const departmentId = parseInt(req.params.departmentId);
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     const lessons = await client.lesson.findMany({
+        where: {
+            departmentId: departmentId,
+        },
         select: {
             id: true,
             name: true,
-            code:true,
-            credit:true,
-            departments: {
-                select: {
-                    id: true,
-                    name: true,
-                    slugifyName: true,
-                },
-            },
+            code: true,
+            credit: true,
         },
+        skip: skip,
+        take: limit,
+        // TODO: total data count
     });
 
+    // TODO: pagination headers
 
     res.status(200).json({
         success: true,
         data: lessons,
-        count:lessons.count
     });
 
 });
 
+// Child of department
 exports.create = asyncHandler(async (req, res, next) => {
-    
+
+    const departmentId = parseInt(req.params.departmentId);
+
     const lessonModel = new Lesson(req.body);
+    lessonModel.departmentId = departmentId;
 
     const created = await client.lesson.create({
         data: lessonModel,
@@ -76,7 +85,7 @@ exports.create = asyncHandler(async (req, res, next) => {
 });
 
 exports.deleteById = asyncHandler(async (req, res, next) => {
-    
+
     const id = parseInt(req.params.id);
 
     const deleted = await client.lesson.delete({
@@ -92,7 +101,7 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateById = asyncHandler(async (req, res, next) => {
-    
+
     const id = parseInt(req.params.id);
 
     const lessonModel = new Lesson(req.body);
@@ -108,5 +117,8 @@ exports.updateById = asyncHandler(async (req, res, next) => {
         success: true,
         data: updated,
     });
-
 });
+
+exports.assignTeacher = asyncHandler(async (req, res, next) => {
+
+})

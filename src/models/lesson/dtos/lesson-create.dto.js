@@ -21,9 +21,6 @@ function lessonCreateDto(req, res, next) {
                 .min(1)
                 .max(6)
                 .required(),
-            departmentId: joi.number()
-                .required(),
-
         }),
     }
 

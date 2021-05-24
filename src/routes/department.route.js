@@ -5,7 +5,7 @@ const updateDto = require('../models/department/dtos/department-update-dto');
 const createDto = require('../models/department/dtos/department-create-dto');
 
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // Only admin can access and manage departments
 
@@ -16,7 +16,7 @@ router.route('/:id')
     .get(getById)
     .patch(updateDto, updateById)
     .delete(deleteById);
-router.route('/')   // v1/faculty/:facultyId/departments post get
+router.route('/')
     .post(createDto, create)
     .get(getAll);
 

@@ -36,22 +36,27 @@ exports.getById = asyncHandler(async (req, res, next) => {
 });
 
 exports.getAll = asyncHandler(async (req, res, next) => {
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     const faculty = await client.faculty.findMany({
         select: {
             id: true,
             name: true,
             slugifyName: true,
         },
+        skip: skip,
+        take: limit,
+        // TODO: total data count 
     });
 
-
+    // TODO: pagination headers 
 
     res.status(200).json({
         success: true,
         datas: faculty,
-        // Faculties counts here... (Will be changed with pagination)...
-        // Department counts here...
-        // Number of students of faculties here...
     });
 });
 

@@ -7,10 +7,15 @@ const updateDto = require('../models/faculty/dtos/faculty-update.dto');
 
 const router = express.Router();
 
+// Child routes 
+const departmentRoute = require('./department.route');
+
 // Only admin can access and manage faculties
 
 router.use(jwtAuthentication);
 router.use(authorize('ADMIN'));
+
+router.use('/:facultyId/departments', departmentRoute);
 
 router.route('/:id')
     .get(getById)

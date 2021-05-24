@@ -15,6 +15,8 @@ exports.User = class {
     pwd;
     pwdHash;
     pwdSalt;
+    userLessons; // relation field;
+    userDepartments; // relation field;
 
     async hashPassword() {
         console.log(this.pwd);

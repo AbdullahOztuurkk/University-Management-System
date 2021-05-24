@@ -35,26 +35,44 @@ exports.getById = asyncHandler(async (req, res, next) => {
 
 });
 
+// Child of faculty
 exports.getAll = asyncHandler(async (req, res, next) => {
+
+    const facultyId = parseInt(req.params.facultyId);
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     const departments = await client.department.findMany({
+        where: {
+            facultyId: facultyId,
+        },
         select: {
             id: true,
             name: true,
             slugifyName: true,
         },
+        skip: skip,
+        take: limit,
+        // TODO: total data count 
     });
 
+    // TODO: pagination headers
 
     res.status(200).json({
         success: true,
         datas: departments,
-        // Lessons counts here...
     });
 });
 
+// Child of faculty 
 exports.create = asyncHandler(async (req, res, next) => {
 
+    console.log(req.body);
     const departmentModel = new Department(req.body);
+    console.log(departmentModel.name);
+    departmentModel.facultyId = parseInt(req.params.facultyId);
     departmentModel.slugifyName = slugify(departmentModel.name, {
         lower: true,
     });
