@@ -77,6 +77,69 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     })
 });
 
+
+exports.getStudents = asyncHandler(async (req, res, next) => {
+
+    const users = await client.department.findMany({
+        select: {
+            id: true,
+            name: true,
+            userDepartments: {
+                select: {
+                    user: {
+                        where:{
+                            role: 'STUDENT'
+                        },
+                        select: {
+                            id: true,
+                            firstName:true,
+                            lastName:true,
+                            status:true,
+                            email:true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    res.status(200).json({
+        data: users,
+        success: true,
+    })
+});
+
+exports.getTeachers = asyncHandler(async (req, res, next) => {
+    
+    const users = await client.department.findMany({
+        select: {
+            id: true,
+            name: true,
+            userDepartments: {
+                select: {
+                    user: {
+                        where:{
+                            role: 'TEACHER'
+                        },
+                        select: {
+                            id: true,
+                            firstName:true,
+                            lastName:true,
+                            status:true,
+                            email:true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    res.status(200).json({
+        data: users,
+        success: true,
+    })
+});
+
 exports.update = asyncHandler(async (req, res, next) => {
 
     const id = parseInt(req.params.id);
