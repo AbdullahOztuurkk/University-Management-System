@@ -4,7 +4,7 @@ const { User } = require("../models/user/user.model");
 
 exports.create = asyncHandler(async (req, res, next) => {
     const userModel = new User(req.body);
-    userModel.assignInformaations();
+    userModel.assignInformations();
     userModel.hashPassword();
     const created = await client.user.create({
         data: userModel,
@@ -115,7 +115,7 @@ exports.delete = asyncHandler(async (req, res, next) => {
 });
 
 exports.getJoinedLessons = asyncHandler(async (req, res, next) => {
-    
+
 });
 
 exports.joinOpenedLesson = asyncHandler(async (req, res, next) => {

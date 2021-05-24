@@ -38,7 +38,7 @@ exports.User = class {
         });
     }
 
-    assignInformaations() {
+    assignInformations() {
         this.email = slugify(String(this.firstName + this.lastName + this.role + this.id + '@university.com'), { lower: true });
         this.status = 'ACTIVE';
     }

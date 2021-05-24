@@ -8,7 +8,7 @@ exports.UserLesson = class {
     user;
     lessonId;
     lesson;
-    sesionYear;
+    seasonYear;
     season;
     result;
     average;
@@ -26,22 +26,22 @@ exports.UserLesson = class {
     }
 
 
-    defineYearAndSesion() {
+    defineYearAndSeason() {
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth();
 
         switch (currentMonth) {
             case (currentMonth >= 1 && currentMonth <= 5):
                 this.season = 'SPRING';
-                this.sesionYear = String((currentYear - 1) + '-' + (currentYear));
+                this.seasonYear = String((currentYear - 1) + '-' + (currentYear));
                 break;
             case (currentMonth >= 6 && currentMonth <= 8):
                 this.season = 'SUMMER';
-                this.sesionYear = String((currentYear - 1) + '-' + (currentYear));
+                this.seasonYear = String((currentYear - 1) + '-' + (currentYear));
                 break;
             case (currentMonth >= 9 && currentMonth <= 12):
                 this.season = 'AUTUMN';
-                this.sesionYear = String((currentYear) + '-' + (currentYear + 1));
+                this.seasonYear = String((currentYear) + '-' + (currentYear + 1));
                 break;
 
         }

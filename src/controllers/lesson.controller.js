@@ -159,7 +159,7 @@ exports.open = asyncHandler(async (req, res, next) => {
     const userLessonModel = new UserLesson(req.body);
     userLessonModel.lessonId = parseInt(req.params.id);
 
-    userLessonModel.defineYearAndSesion();
+    userLessonModel.defineYearAndSeason();
 
     const [updated, created] = await client.$transaction([
         client.lesson.update({
@@ -180,7 +180,7 @@ exports.open = asyncHandler(async (req, res, next) => {
 
     const userLesson = await client.userLesson.findFirst({
         where: {
-            seasonYear: userLessonModel.sesionYear,
+            seasonYear: userLessonModel.seasonYear,
         },
         select: {
             id: true,
