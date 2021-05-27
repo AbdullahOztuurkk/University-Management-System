@@ -10,128 +10,164 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Faculty {
-  id          Int          @id @default(autoincrement())
-  name        String
-  slugifyName String       @unique
-  departments Department[]
-
-  @@index([id])
+model faculties {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(50)
+  slugifyName String        @db.VarChar(50)
+  departments departments[]
 }
 
-model Department {
-  id              Int              @id @default(autoincrement())
-  name            String
-  slugifyName     String           @unique
-  faculty         Faculty          @relation(fields: [facultyId], references: [id])
-  facultyId       Int
-  lessons         Lesson[]
-  userDepartments UserDepartment[]
-
-  @@index([id, facultyId])
+model departments {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(50)
+  slugifyName        String               @db.VarChar(50)
+  facultyId          Int
+  faculty            faculties            @relation(fields: [facultyId], references: [id])
+  studentDepartments studentDepartments[]
+  teacherDepartments teacherDepartments[]
+  lessons            lessons[]
 }
 
-model UserDepartment {
-  userId       Int
-  user         User       @relation(fields: [userId], references: [id])
-  departmentId Int
-  department   Department @relation(fields: [departmentId], references: [id])
-
-  @@id([userId, departmentId])
-  @@index([departmentId])
-}
-
-model Lesson {
-  id           Int           @id @default(autoincrement())
-  name         String
-  credit       Int
-  code         String        @unique
+model lessons {
+  id           Int         @id @default(autoincrement())
+  name         String      @db.VarChar(50)
+  slugifyName  String      @unique @db.VarChar(50)
+  code         String      @db.VarChar(5)
   grade        Int
-  status       LessonStatus? @default(TIMEOUT)
-  department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  userLessons  UserLesson[]
+  department   departments @relation(fields: [departmentId], references: [id])
 
-  @@index([id, departmentId])
+  classes classes[]
+  @@unique([departmentId, slugifyName])
 }
 
-model UserLesson {
-  id         Int          @id @default(autoincrement())
-  userId     Int
-  user       User         @relation(fields: [userId], references: [id])
-  lessonId   Int
-  lesson     Lesson       @relation(fields: [lessonId], references: [id])
-  seasonYear String
-  season     Season
-  result     LessonResult @default(NOTRESULT)
-  average    Int          @default(0)
-  exams      Exam[]
-
-  @@index([lessonId])
-  @@index([userId])
+model users {
+  id                 Int                  @id @default(autoincrement())
+  firsName           String               @db.VarChar(50)
+  lastName           String               @db.VarChar(50)
+  email              String               @unique @db.VarChar(50)
+  role               USER_ROLE
+  pwdHash            String               @db.Text
+  pwdSalt            String               @db.Text
+  teacherField       teacherFields?
+  studentFields      studentFields?
+  studentDepartments studentDepartments[]
+  teacherDepartments teacherDepartments[]
+  classes            classes[]
+  studentClasses     studentClasses[]
 }
 
-model Exam {
-  id               Int        @id @default(autoincrement())
-  userLessonId     Int
-  UserLesson       UserLesson @relation(fields: [userLessonId], references: [id])
-  type             ExamType
-  score            Int
-  announcementDate DateTime   @default(now())
+model teacherFields {
+  qualification TEACHER_QUALIFICATION
+  website       String                @unique @db.VarChar(50)
+  teacherId     Int
+  teacher       users                 @relation(fields: [teacherId], references: [id])
 
-  @@index([id])
-  @@index([userLessonId])
+  @@id([teacherId])
 }
 
-model User {
-  id              Int              @id @default(autoincrement())
-  email           String           @unique
-  firstName       String
-  lastName        String
-  role            Role
-  status          UserStatus
-  pwdHash         String
-  pwdSalt         String
-  userLessons     UserLesson[]
-  userDepartments UserDepartment[]
+model studentFields {
+  status    STUDENT_STATUS
+  grade     Int
+  gno       Decimal
+  studentId Int
+  student   users          @relation(fields: [studentId], references: [id])
 
-  @@index([id])
-  @@index([email])
+  @@id([studentId])
 }
 
-enum Role {
-  STUDENT
-  TEACHER
+model studentDepartments {
+  type         STUDENT_DEPARTMENT_TYPE
+  studentId    Int
+  student      users                   @relation(fields: [studentId], references: [id])
+  departmentId Int
+  department   departments             @relation(fields: [departmentId], references: [id])
+
+  @@id([studentId, departmentId])
+  @@unique([studentId, type])
+}
+
+model teacherDepartments {
+  teacherId    Int
+  teacher      users       @relation(fields: [teacherId], references: [id])
+  departmentId Int
+  department   departments @relation(fields: [departmentId], references: [id])
+
+  @@id([teacherId, departmentId])
+}
+
+model classes {
+  id             Int              @id @default(autoincrement())
+  session        CLASS_SESSION
+  year           String           @db.VarChar(9)
+  status         CLASS_STATUS
+  lessonId       Int
+  lesson         lessons          @relation(fields: [lessonId], references: [id])
+  teacherId      Int
+  teacher        users            @relation(fields: [teacherId], references: [id])
+  studentClasses studentClasses[]
+}
+
+model studentClasses {
+  id        Int     @unique
+  classId   Int
+  class     classes @relation(fields: [classId], references: [id])
+  studentId Int
+  student   users   @relation(fields: [studentId], references: [id])
+  exams     exams[]
+
+  @@id([id, classId, studentId])
+}
+
+model exams {
+  id             Int            @id @default(autoincrement())
+  studentClassId Int
+  studentClass   studentClasses @relation(fields: [studentClassId], references: [id])
+  type           EXAM_TYPE
+  score          Decimal
+
+  @@unique([studentClassId, type])
+}
+
+enum USER_ROLE {
   ADMIN
+  TEACHER
+  STUDENT
 }
 
-enum UserStatus {
+enum TEACHER_QUALIFICATION {
+  ASSISTANT
+  LECTURER
+  DOCENT
+  PROF
+}
+
+enum STUDENT_STATUS {
   ACTIVE
   INACTIVE
   GRADUATED
   LEFT
 }
 
-enum ExamType {
-  MID
-  PROJECT
-  FINAL
-  MAKEUP
+enum STUDENT_DEPARTMENT_TYPE {
+  MAJOR
+  MINOR
+  DOUBLE_MAJOR
 }
 
-enum LessonStatus {
-  OPEN
-  TIMEOUT
-}
-
-enum LessonResult {
-  PASSED
-  FAILED
-  NOTRESULT
-}
-
-enum Season {
+enum CLASS_SESSION {
   AUTUMN
   SPRING
   SUMMER
+}
+
+enum CLASS_STATUS {
+  OPENED
+  CLOSED
+}
+
+enum EXAM_TYPE {
+  MIDTERM
+  FINAL
+  MAKEUP
 }
