@@ -45,12 +45,12 @@ model users {
   id                 Int                  @id @default(autoincrement())
   firsName           String               @db.VarChar(50)
   lastName           String               @db.VarChar(50)
-  email              String               @unique @db.VarChar(50)
+  email              String               @unique @db.VarChar(100)
   role               USER_ROLE
   pwdHash            String               @db.Text
   pwdSalt            String               @db.Text
   teacherField       teacherFields?
-  studentFields      studentFields?
+  studentField       studentFields?
   studentDepartments studentDepartments[]
   teacherDepartments teacherDepartments[]
   classes            classes[]
@@ -59,7 +59,7 @@ model users {
 
 model teacherFields {
   qualification TEACHER_QUALIFICATION
-  website       String                @unique @db.VarChar(50)
+  website       String                @unique @db.VarChar(100)
   teacherId     Int
   teacher       users                 @relation(fields: [teacherId], references: [id])
 
@@ -67,9 +67,9 @@ model teacherFields {
 }
 
 model studentFields {
-  status    STUDENT_STATUS
-  grade     Int
-  gno       Decimal
+  status    STUDENT_STATUS @default(ACTIVE)
+  grade     Int            @default(1)
+  gno       Decimal?       @default(0.00)
   studentId Int
   student   users          @relation(fields: [studentId], references: [id])
 
