@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const auth = require('./routes/auth.route');
 const faculty = require('./routes/faculty.route')
 const department = require('./routes/department.route');
+const user = require('./routes/user.route');
+const exam = require('./routes/exam.route');
 const { connectDb } = require('./config/prisma-config');
 const errorHandler = require('./middleware/error');
 
@@ -26,6 +28,8 @@ connectDb();
 app.use('/v1/auth', auth);
 app.use('/v1/faculty', faculty);
 app.use('/v1/department', department);
+app.use('/v1/user',user);
+app.use('/v1/exam',exam);
 
 app.use(errorHandler);
 
