@@ -23,9 +23,9 @@ router.use(jwtAuthentication);
 router
 	.route("/:id")
 	.get(getById)
-	.patch(authorize("ADMIN"), updateDto, updateById)
+	.patch(authorize("ADMIN"), updateById)
 	.delete(authorize("ADMIN"), deleteById);
-router.route("/").post(authorize("ADMIN"), createDto, create).get(getAll);
+router.route("/").post(authorize("ADMIN"), createUserLessonDto, create).get(getAll);
 router.route("/teachers", getTeachers);
 router.route("/students", getStudents);
 router
