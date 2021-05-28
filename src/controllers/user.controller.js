@@ -142,7 +142,7 @@ exports.getTeachers = asyncHandler(async (req, res, next) => {
     })
 });
 
-exports.update = asyncHandler(async (req, res, next) => {
+exports.updateById = asyncHandler(async (req, res, next) => {
 
     const id = parseInt(req.params.id);
 
@@ -162,7 +162,7 @@ exports.update = asyncHandler(async (req, res, next) => {
 
 });
 
-exports.delete = asyncHandler(async (req, res, next) => {
+exports.deleteById = asyncHandler(async (req, res, next) => {
 
     const id = parseInt(req.params.id);
 
