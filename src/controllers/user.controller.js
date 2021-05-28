@@ -1,6 +1,8 @@
 const { client } = require("../config/prisma-config");
 const asyncHandler = require("../middleware/async");
 const { User } = require("../models/user/user.model");
+const UserLessonCreateDto = require("../models/userlesson/dtos/create-userlesson.dto");
+const ErrorResponse = require("../utils/ErrorResponse");
 
 exports.create = asyncHandler(async (req, res, next) => {
     const userModel = new User(req.body);
@@ -179,12 +181,93 @@ exports.delete = asyncHandler(async (req, res, next) => {
 
 exports.getJoinedLessons = asyncHandler(async (req, res, next) => {
 
+    const userId = req.user.id;
+
+	const lessons = await client.userLesson.findMany({
+		select: {
+			season: true,
+			average: true,
+			lesson: {
+				select: {
+					code: true,
+					credit: true,
+					name: true,
+					status: true,
+				},
+				where: {
+					userId: userId,
+				},
+			},
+			exams: true,
+		},
+	});
+
+	res.status(200).json({
+		success: true,
+		data: lessons,
+	});
+
 });
 
 exports.joinOpenedLesson = asyncHandler(async (req, res, next) => {
 
+    const lessonId = req.body.id;
+    const userId = req.user.id;
+
+    const lesson = await client.userLesson.findUnique({
+		select: {
+			lesson: {
+				select: {
+					code: true,
+					credit: true,
+					name: true,
+					status: true,
+                    id:true
+				},
+				where: {
+                    id:lessonId,
+				},
+			},
+		},
+	});
+
+    if(lesson.status != 'OPEN'){
+        return next(new ErrorResponse('Açık olmayan bir derse giremezsiniz.',400));
+    }
+    
+    const userLesson=new UserLessonCreateDto(req.body);
+    userLesson.userId=userId;
+
+	res.status(200).json({
+		success: true,
+		data: lesson,
+	});
+
 });
 
 exports.leaveOpenedLesson = asyncHandler(async (req, res, next) => {
+
+    const userLessonId=req.body.id;
+
+    const lesson = await client.userLesson.findUnique({
+		select: {
+            id:true,
+			where:{
+                id:userLessonId
+            }
+		},
+	});
+    
+    if(lesson.status != 'OPEN'){
+        return next(new ErrorResponse('Açık olmayan bir dersten çıkamazsınız.',400));
+    }
+
+    const userLesson=new UserLessonCreateDto(req.body);
+    userLesson.userId=userId;
+
+	res.status(200).json({
+		success: true,
+		data: lesson,
+	});
 
 });
