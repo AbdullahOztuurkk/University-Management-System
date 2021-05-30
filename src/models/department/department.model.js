@@ -1,15 +1,18 @@
+const { default: slugify } = require("slugify");
 const constants = require("../../constants/constants");
 
 exports.Department = class {
     constructor(object) {
         Object.assign(this, object);
+
+        this.slugifyName = slugify(this.name, { replacement: '-', lower: true });
     }
     id;
     name;
     slugifyName;
     facultyId;
-    faculty; // Relation field
-    lessons; // Relation field
-    userDepartments; // Relation field
-
+    faculty;
+    lessons;
+    studentDepartments;
+    teacherDepartments;
 }

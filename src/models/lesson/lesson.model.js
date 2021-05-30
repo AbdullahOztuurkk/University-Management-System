@@ -1,16 +1,18 @@
-const constants = require('../../constants/constants');
+const { default: slugify } = require("slugify");
 
 exports.Lesson = class {
     constructor(object) {
         Object.assign(this, object);
+
+        this.slugifyName = slugify(this.name, { replacement: '-', lower: true });
     }
     id;
     name;
+    slugifyName;
     credit;
     code;
     grade;
-    status;
     departmentId;
-    department; // Relation field
-    userLessons; // Relation field
+    department;
+    classes;
 }

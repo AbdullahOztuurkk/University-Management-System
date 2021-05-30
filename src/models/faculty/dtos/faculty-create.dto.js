@@ -7,6 +7,7 @@ function facultyCreateDto(req, res, next) {
         body: joi.object({
             name: joi.string()
                 .min(4)
+                .max(50)
                 .required(),
         }),
     }

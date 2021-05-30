@@ -7,8 +7,8 @@ function userPwdDto(req, res, next) {
     const schema = {
         body: joi.object({
             pwd: joi.string()
-                .min(4)
-                .max(16)
+                .min(8)
+                .max(32)
                 .required()
         }),
     }

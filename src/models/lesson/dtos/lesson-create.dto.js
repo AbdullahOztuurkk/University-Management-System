@@ -8,15 +8,16 @@ function lessonCreateDto(req, res, next) {
         body: joi.object({
             name: joi.string()
                 .min(4)
+                .max(50)
                 .required(),
             credit: joi.number()
                 .min(1)
                 .max(11)
                 .required(),
             code: joi.string()
+                .min(5)
+                .max(5)
                 .required(),
-            status: joi.string()
-                .valid('OPEN', 'CLOSED'), // Optional not required
             grade: joi.number()
                 .min(1)
                 .max(6)

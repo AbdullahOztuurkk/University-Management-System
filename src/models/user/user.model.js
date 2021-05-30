@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const constants = require('../../constants/constants');
 const bcyrpt = require('bcryptjs');
 const { default: slugify } = require('slugify');
+const { client } = require('../../config/prisma-config');
 
 exports.User = class {
     constructor(object) {
@@ -10,20 +11,76 @@ exports.User = class {
     id;
     firstName;
     lastName;
-    role;
-    status;
     email;
+    role;
     pwd;
     pwdHash;
     pwdSalt;
-    userLessons; // relation field;
-    userDepartments; // relation field;
-    departmentId; // To register at initialCreate
+    teacherField;
+    studentField;
+    studentDepartments;
+    teacherDepartments;
+    classes;
+    studentClasses;
+
+    // Rabbit mq
+    static async calculateGno(studentClassId) {
+        const student = await client.users.findFirst({
+            where: {
+                studentClasses: {
+                    some: {
+                        id: studentClassId,
+                    }
+                }
+            },
+            select: {
+                id: true,
+                studentClasses: {
+                    where: {
+                        result: {
+                            not: 'NORESULT',
+                        }
+                    },
+                    select: {
+                        letterScore: true,
+                        class: {
+                            select: {
+                                lesson: {
+                                    select: {
+                                        credit: true,
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        let [totalCredits, takenCreditScores, gno] = [0, 0, 0.00]
+
+        student.studentClasses.forEach(studentClass => {
+            totalCredits += studentClass.class.lesson.credit;
+            takenCreditScores += (studentClass.class.lesson.credit * studentClass.letterScore);
+        });
+
+        if (!totalCredits === 0 || !takenCredits === 0) {
+            gno = (takenCreditScores / totalCredits);
+        }
+
+        await client.studentFields.update({
+            where: {
+                studentId: student.id
+            },
+            data: {
+                gno: gno,
+            }
+        });
+    }
 
     async hashPassword() {
-        const personalPwd = slugify(this.firstName, { replacement: '' });
         this.pwdSalt = await bcyrpt.genSalt(10);
-        this.pwdHash = await bcyrpt.hash(personalPwd, this.pwdSalt);
+        this.pwdHash = await bcyrpt.hash(this.pwd, this.pwdSalt);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);
@@ -36,10 +93,5 @@ exports.User = class {
         return jwt.sign({ id: this.id }, constants.JWT_SECRET, {
             expiresIn: constants.JWT_EXPIRE,
         });
-    }
-
-    assignInformations() {
-        this.email = slugify(String(this.firstName + this.lastName + this.role + this.id + '@university.com'), { lower: true });
-        this.status = 'ACTIVE';
     }
 }

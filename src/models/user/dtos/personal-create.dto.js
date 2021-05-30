@@ -7,13 +7,19 @@ function userCreateDto(req, res, next) {
     const schema = {
         body: joi.object({
             firstName: joi.string()
+                .min(2)
+                .max(50)
                 .required(),
             lastName: joi.string()
+                .min(2)
+                .max(50)
                 .required(),
-            role: joi.string()
-                .valid('ADMIN', 'TEACHER', 'STUDENT')
+            pwd: joi.string()
+                .min(8)
+                .max(32),
+            email: joi.string()
+                .email()
                 .required(),
-            departmentId: joi.number(),
         }),
     }
 

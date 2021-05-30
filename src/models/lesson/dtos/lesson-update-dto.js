@@ -7,17 +7,17 @@ function lessonUpdateDto(req, res, next) {
     const schema = {
         body: joi.object({
             name: joi.string()
-                .min(4),
+                .min(4)
+                .max(50),
             credit: joi.number()
                 .min(1)
                 .max(11),
-            code: joi.string(),
-            status: joi.string()
-                .valid('OPEN', 'CLOSED'), // Optional not required
+            code: joi.string()
+                .min(5)
+                .max(5),
             grade: joi.number()
                 .min(1)
                 .max(6),
-            departmentId: joi.number(),
         }),
     }
 

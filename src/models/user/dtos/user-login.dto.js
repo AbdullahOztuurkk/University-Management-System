@@ -10,8 +10,8 @@ function userLoginDto(req, res, next) {
                 .email()
                 .required(),
             pwd: joi.string()
-                .min(4)
-                .max(16)
+                .min(8)
+                .max(32)
                 .required()
         }),
     }

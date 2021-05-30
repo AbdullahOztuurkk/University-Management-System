@@ -1,15 +1,21 @@
-const joi = require('joi');
 const ErrorResponse = require('../../../utils/ErrorResponse');
 const options = require('../../dto-options');
+const joi = require('joi');
 
-function departmentUpdateDto(req, res, next) {
+function classUpdateDto(req, res, next) {
     const schema = {
         body: joi.object({
-            name: joi.string()
-                .min(4)
-                .max(50),
+            score: joi.number()
+                .min(0)
+                .max(100)
+                .required(),
+            type: joi.string()
+                .valid('MIDTERM', 'FINAL', 'MAKEUP')
+                .required(),
         }),
     }
+
+
 
     const { error, value } = schema.body.validate(req.body, options);
 
@@ -20,4 +26,4 @@ function departmentUpdateDto(req, res, next) {
     next();
 }
 
-module.exports = departmentUpdateDto;
+module.exports = classUpdateDto;

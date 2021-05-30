@@ -6,7 +6,8 @@ function facultyUpdateDto(req, res, next) {
     const schema = {
         body: joi.object({
             name: joi.string()
-                .min(4),
+                .min(4)
+                .max(50),
         }),
     }
 
