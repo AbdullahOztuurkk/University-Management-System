@@ -33,6 +33,7 @@ model lessons {
   name         String      @db.VarChar(50)
   slugifyName  String      @unique @db.VarChar(50)
   code         String      @db.VarChar(5)
+  credit       Int
   grade        Int
   departmentId Int
   department   departments @relation(fields: [departmentId], references: [id])
@@ -100,7 +101,7 @@ model classes {
   id             Int              @id @default(autoincrement())
   session        CLASS_SESSION
   year           String           @db.VarChar(9)
-  status         CLASS_STATUS
+  status         CLASS_STATUS?    @default(CLOSED)
   lessonId       Int
   lesson         lessons          @relation(fields: [lessonId], references: [id])
   teacherId      Int
@@ -109,12 +110,15 @@ model classes {
 }
 
 model studentClasses {
-  id        Int     @unique
-  classId   Int
-  class     classes @relation(fields: [classId], references: [id])
-  studentId Int
-  student   users   @relation(fields: [studentId], references: [id])
-  exams     exams[]
+  id          Int                    @unique
+  result      STUDENTCLASSES_RESULT? @default(NORESULT)
+  average     Decimal?               @default(0.00)
+  letterScore Decimal?               @default(0.00)
+  classId     Int
+  class       classes                @relation(fields: [classId], references: [id])
+  studentId   Int
+  student     users                  @relation(fields: [studentId], references: [id])
+  exams       exams[]
 
   @@id([id, classId, studentId])
 }
@@ -170,4 +174,10 @@ enum EXAM_TYPE {
   MIDTERM
   FINAL
   MAKEUP
+}
+
+enum STUDENTCLASSES_RESULT {
+  PASSED
+  FAILED
+  NORESULT
 }
