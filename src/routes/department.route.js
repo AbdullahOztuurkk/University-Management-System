@@ -8,7 +8,6 @@ const createDto = require('../models/department/dtos/department-create-dto');
 const router = express.Router({ mergeParams: true });
 
 // Only admin can access and manage departments
-
 router.use(jwtAuthentication);
 router.use(authorize('ADMIN'));
 

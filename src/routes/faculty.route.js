@@ -11,7 +11,6 @@ const router = express.Router();
 const departmentRoute = require('./department.route');
 
 // Only admin can access and manage faculties
-
 router.use(jwtAuthentication);
 router.use(authorize('ADMIN'));
 
