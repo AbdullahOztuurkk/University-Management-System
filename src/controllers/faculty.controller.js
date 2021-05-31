@@ -75,16 +75,6 @@ exports.updateById = asyncHandler(async (req, res, next) => {
         select: {
             id: true,
             name: true,
-            departments: {
-                select: {
-                    // !This line of code may cause a kind of error
-                    _count: {
-                        id: true,
-                    },
-                    id: true,
-                    name: true,
-                },
-            },
         },
     });
 
