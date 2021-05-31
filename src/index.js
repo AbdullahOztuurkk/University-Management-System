@@ -8,6 +8,7 @@ const faculty = require('./routes/faculty.route')
 const department = require('./routes/department.route');
 const lesson = require('./routes/lesson.route');
 const class_ = require('./routes/class.route');
+const exam = require('./routes/exam.route');
 const { connectDb } = require('./config/prisma-config');
 const errorHandler = require('./middleware/error');
 
@@ -29,7 +30,8 @@ app.use('/v1/auth', auth);
 app.use('/v1/faculties', faculty);
 app.use('/v1/departments', department);
 app.use('/v1/lessons', lesson);
-app.use('/v1/class', class_);
+app.use('/v1/classes', class_);
+app.use('/v1/exams', exam);
 
 app.use(errorHandler);
 
