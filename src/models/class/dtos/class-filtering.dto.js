@@ -20,7 +20,7 @@ function classFilteringDto(req, res, next) {
     if (error) {
         return next(new ErrorResponse(`${error.message}`, 400));
     }
-    req.body = value;
+    req.query = value;
     next();
 }
 
