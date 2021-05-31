@@ -7,9 +7,14 @@ const createDto = require('../models/department/dtos/department-create-dto');
 
 const router = express.Router({ mergeParams: true });
 
+// Chid route
+const lessonRoute = require('./lesson.route');
+
 // Only admin can access and manage departments
 router.use(jwtAuthentication);
 router.use(authorize('ADMIN'));
+
+router.use('/:departmentId/lessons', lessonRoute);
 
 router.route('/:id')
     .get(getById)
