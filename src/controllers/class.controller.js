@@ -227,3 +227,60 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
         success: true,
     });
 });
+
+exports.addStudent = asyncHandler(async (req, res, next) => {
+    const id = parseInt(req.params.id);
+    const studentId = parseInt(req.body.studentId);
+
+    const student = await client.studentClasses.create({
+        data: {
+            classId: id,
+            studentId: studentId,
+        },
+        select: {
+            id: true,
+            average: true,
+            letterScore: true,
+            result: true,
+            student: {
+                select: {
+                    id: true,
+                    firsName: true,
+                    lastName: true,
+                },
+            },
+            exams: {
+                select: {
+                    id: true,
+                    type: true,
+                    score: true,
+                },
+
+            },
+        },
+    });
+
+    res.status(200).json({
+        success: true,
+        data: student,
+    });
+});
+
+// ?studentId is taken from req.body 
+exports.removeStudent = asyncHandler(async (req, res, next) => {
+    const id = parseInt(req.params.id);
+    const studentId = parseInt(req.body.id);
+
+    await client.studentClasses.delete({
+        where: {
+            id_classId_studentId: {
+                classId: id,
+                studentId: studentId
+            },
+        },
+    });
+
+    res.status(200).json({
+        success: true,
+    });
+});

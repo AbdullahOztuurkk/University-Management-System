@@ -1,5 +1,5 @@
 const express = require('express');
-const { create, getAll, getById, updateById, deleteById, getAllStudents } = require('../controllers/class.controller');
+const { create, getAll, getById, updateById, deleteById, getAllStudents, addStudent, removeStudent } = require('../controllers/class.controller');
 const { jwtAuthentication, authorize } = require('../middleware/auth');
 const updateDto = require('../models/class/dtos/class-update.dto');
 const createDto = require('../models/class/dtos/class-create.dto');
@@ -19,5 +19,7 @@ router.route('/:id')
 
 router.route('/:id/students')
     .get(jwtAuthentication, authorize('ADMIN'), getAllStudents)
+    .post(jwtAuthentication, authorize('ADMIN'), addStudent)
+    .delete(jwtAuthentication, authorize('ADMIN'), removeStudent);
 
 module.exports = router;
