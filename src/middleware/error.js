@@ -1,8 +1,9 @@
 const { Prisma } = require(".prisma/client");
 const ErrorResponse = require("../utils/ErrorResponse");
 
+// TODO: Error messages should be edited for responsive responses
 const errorHandler = async (err, req, res, next) => {
-  //loading all errors to error list
+
   let currentError = err;
 
   currentError.Message = err.Message;
