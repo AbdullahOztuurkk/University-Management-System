@@ -41,19 +41,17 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.me = asyncHandler(async (req, res, next) => {
-    const user = await client.user.findUnique({
+    const user = await client.users.findUnique({
         where: {
             id: req.user.id,
         },
         select: {
             id: true,
             email: true,
-            status: true,
             role: true,
             firstName: true,
             lastName: true,
         }
-        // Bulunduğu sezona ait dersler burada dönülebilir.
     });
 
     if (!user) {
@@ -76,7 +74,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
-    const user = await client.user.findFirst({
+    const user = await client.users.findFirst({
         where: {
             email: req.email
         },
@@ -114,7 +112,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 });
 
 exports.resetPassword = asyncHandler(async (req, res, next) => {
-    const user = await client.user.findUnique({
+    const user = await client.users.findUnique({
         where: {
             id: req.user.id,
         },
@@ -130,7 +128,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
     await userModel.hashPassword();
 
-    await client.user.update({
+    await client.users.update({
         where: {
             email: user.email,
         },
@@ -144,6 +142,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 });
 
 const sendTokenResponse = (user, statusCode, res) => {
+
     const token = user.getSignedJwt();
 
     const cookieOptions = {

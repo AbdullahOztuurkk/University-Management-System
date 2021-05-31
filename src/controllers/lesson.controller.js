@@ -1,13 +1,17 @@
 const { client } = require('../config/prisma-config');
 const asyncHandler = require('../middleware/async');
 const { Lesson } = require('../models/lesson/lesson.model');
-const { UserLesson } = require('../models/userlesson/userlesson.model');
-const ErrorResponse = require('../utils/ErrorResponse');
+const { Class } = require('../models/class/class.model');
 
+// TODO: Pagination
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const lesson = await client.lesson.findUnique({
+    // ?Is there another way better instead of taking instance of class
+    const classModel = new Class();
+    class_.fillYearAndSession();
+
+    const lesson = await client.lessons.findUnique({
         where: {
             id: id,
         },
@@ -16,11 +20,35 @@ exports.getById = asyncHandler(async (req, res, next) => {
             name: true,
             code: true,
             credit: true,
+            grade: true,
             department: {
                 select: {
                     id: true,
                     name: true,
-                    slugifyName: true,
+                },
+            },
+            classes: {
+                where: {
+                    session: classModel.session,
+                    year: classModel.year,
+                },
+                select: {
+                    // !This line of query may cause a kind of error
+                    _count: {
+                        select: {
+                            id: true,
+                        }
+                    },
+                    id: true,
+                    year: true,
+                    session: true,
+                    status: true,
+                    teacher: {
+                        select: {
+                            firsName: true,
+                            lastName: true,
+                        },
+                    },
                 },
             },
         },
@@ -34,16 +62,16 @@ exports.getById = asyncHandler(async (req, res, next) => {
 
 });
 
-// Child of department
+// *Child of department
 exports.getAll = asyncHandler(async (req, res, next) => {
 
     const departmentId = parseInt(req.params.departmentId);
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    // ?Is there...
+    const classModel = new Class();
+    classModel.fillYearAndSession();
 
-    const lessons = await client.lesson.findMany({
+    const lessons = await client.lessons.findMany({
         where: {
             departmentId: departmentId,
         },
@@ -52,13 +80,23 @@ exports.getAll = asyncHandler(async (req, res, next) => {
             name: true,
             code: true,
             credit: true,
+            grade: true,
+            classes: {
+                where: {
+                    session: classModel.session,
+                    year: classModel.year,
+                },
+                select: {
+                    // !This line of query may cause a kind of error
+                    _count: {
+                        select: {
+                            id: true
+                        }
+                    }
+                },
+            },
         },
-        skip: skip,
-        take: limit,
-        // TODO: total data count
     });
-
-    // TODO: pagination headers
 
     res.status(200).json({
         success: true,
@@ -67,16 +105,30 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 
 });
 
-// Child of department
+// *Child of department
 exports.create = asyncHandler(async (req, res, next) => {
 
     const departmentId = parseInt(req.params.departmentId);
 
-    const lessonModel = new Lesson(req.body);
-    lessonModel.departmentId = departmentId;
+    req.body.departmentId = departmentId
 
-    const created = await client.lesson.create({
+    const lessonModel = new Lesson(req.body);
+
+    const created = await client.lessons.create({
         data: lessonModel,
+        select: {
+            id: true,
+            name: true,
+            code: true,
+            credit: true,
+            grade: true,
+            department: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            }
+        }
     });
 
     res.status(200).json({
@@ -90,7 +142,7 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
 
     const id = parseInt(req.params.id);
 
-    const deleted = await client.lesson.delete({
+    await client.lessons.delete({
         where: {
             id: id,
         },
@@ -98,110 +150,65 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: `${deleted.name} başarıyla silindi.`,
-    })
+    });
 });
 
 exports.updateById = asyncHandler(async (req, res, next) => {
 
     const id = parseInt(req.params.id);
 
+    const classModel = new Class();
+    classModel.fillYearAndSession();
+
     const lessonModel = new Lesson(req.body);
 
-    const updated = await client.faculty.update({
+    const updated = await client.lessons.update({
         where: {
             id: id,
         },
         data: lessonModel,
+        select: {
+            id: true,
+            name: true,
+            code: true,
+            credit: true,
+            grade: true,
+            department: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            },
+            classes: {
+                where: {
+                    session: classModel.session,
+                    year: classModel.year,
+                },
+                select: {
+                    // !This line of query may cause a kind of error
+                    _count: {
+                        select: {
+                            id: true,
+                        }
+                    },
+                    id: true,
+                    year: true,
+                    session: true,
+                    status: true,
+                    teacher: {
+                        select: {
+                            firsName: true,
+                            lastName: true,
+                        },
+                    },
+                },
+            },
+        },
     });
 
     res.status(200).json({
         success: true,
         data: updated,
     });
-});
-
-exports.open = asyncHandler(async (req, res, next) => {
-
-    const [user, lesson] = await client.$transaction([
-        client.user.findUnique({
-            where: {
-                id: req.body.userId,
-            },
-            select: {
-                id: true,
-                role: true,
-                userDepartments: {
-                    select: {
-                        departmentId: true,
-                    },
-                },
-            },
-        }),
-        client.lesson.findUnique({
-            where: {
-                id: req.params.id,
-            },
-            select: {
-                id: true,
-                departmentId: true,
-            }
-        }),
-    ]);
-
-    if (!user.role === 'TEACHER') {
-        return next(new ErrorResponse('Sadece öğretmenler ders sorumlusu olarak atanabilir.', 400));
-    }
-    if (!user.userDepartments.find(department => department.departmentId === lesson.departmentId)) {
-        return next(new ErrorResponse('Ders sorumlusu öğretmenin dersin bağlı olduğu departmanına kayıtlı olmalı.', 400));
-    }
-
-    const userLessonModel = new UserLesson(req.body);
-    userLessonModel.lessonId = parseInt(req.params.id);
-
-    userLessonModel.defineYearAndSeason();
-
-    const [updated, created] = await client.$transaction([
-        client.lesson.update({
-            where: {
-                id: userLessonModel.lessonId,
-            },
-            select: {
-                status: true,
-            },
-            data: {
-                status: 'OPEN',
-            },
-        }),
-        client.userLesson.create({
-            data: userLessonModel,
-        }),
-    ]);
-
-    const userLesson = await client.userLesson.findFirst({
-        where: {
-            seasonYear: userLessonModel.seasonYear,
-        },
-        select: {
-            id: true,
-            user: {
-                select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    role: true,
-                    status: true,
-                }
-            }
-        },
-        include: {
-            lesson: true,
-        }
-    });
-
-    res.status(200).json({
-        success: true,
-        data: userLesson,
-    })
 });
 

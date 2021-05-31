@@ -3,26 +3,28 @@ const { Faculty } = require('../models/faculty/faculty.model');
 const asyncHandler = require('../middleware/async');
 const { default: slugify } = require("slugify");
 
+// TODO: Pagination 
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const faculty = await client.faculty.findUnique({
+    const faculty = await client.faculties.findUnique({
         where: {
             id: id,
         },
         select: {
             id: true,
             name: true,
-            slugifyName: true,
             departments: {
                 select: {
+                    // !This line of code may cause a kind of error
+                    _count: {
+                        id: true,
+                    },
                     id: true,
                     name: true,
-                    slugifyName: true,
                 },
             },
         },
-
     });
 
     res.status(200).json({
@@ -34,22 +36,12 @@ exports.getById = asyncHandler(async (req, res, next) => {
 
 exports.getAll = asyncHandler(async (req, res, next) => {
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-
-    const faculty = await client.faculty.findMany({
+    const faculty = await client.faculties.findMany({
         select: {
             id: true,
             name: true,
-            slugifyName: true,
         },
-        skip: skip,
-        take: limit,
-        // TODO: total data count 
     });
-
-    // TODO: pagination headers 
 
     res.status(200).json({
         success: true,
@@ -85,11 +77,25 @@ exports.updateById = asyncHandler(async (req, res, next) => {
         });
     }
 
-    const updated = await client.faculty.update({
+    const updated = await client.faculties.update({
         where: {
             id: id,
         },
         data: facultyModel,
+        select: {
+            id: true,
+            name: true,
+            departments: {
+                select: {
+                    // !This line of code may cause a kind of error
+                    _count: {
+                        id: true,
+                    },
+                    id: true,
+                    name: true,
+                },
+            },
+        },
     });
 
     res.status(200).json({
@@ -101,7 +107,7 @@ exports.updateById = asyncHandler(async (req, res, next) => {
 exports.deleteById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const deleted = await client.faculty.delete({
+    await client.faculties.delete({
         where: {
             id: id,
         },
@@ -109,7 +115,5 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: `${deleted.name} başarıyla silindi.`,
-    })
-
+    });
 });

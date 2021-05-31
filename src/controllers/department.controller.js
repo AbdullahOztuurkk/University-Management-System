@@ -3,24 +3,29 @@ const asyncHandler = require("../middleware/async");
 const { Department } = require('../models/department/department.model');
 const { default: slugify } = require('slugify');
 
+// TODO: Pagination
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const department = await client.department.findUnique({
+    const department = await client.departments.findUnique({
         where: {
             id: id,
         },
         select: {
             id: true,
             name: true,
-            slugifyName: true,
             lessons: {
                 select: {
                     id: true,
                     name: true,
-                    grade: true,
                     code: true,
                 },
+            },
+            faculty: {
+                select: {
+                    id: true,
+                    name: true,
+                }
             }
         },
 
@@ -29,36 +34,24 @@ exports.getById = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         datas: department,
-        // Departments counts here...
-        // Number of users of departments here...
     });
 
 });
 
-// Child of faculty
+// *Child of faculty
 exports.getAll = asyncHandler(async (req, res, next) => {
 
     const facultyId = parseInt(req.params.facultyId);
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-
-    const departments = await client.department.findMany({
+    const departments = await client.departments.findMany({
         where: {
             facultyId: facultyId,
         },
         select: {
             id: true,
             name: true,
-            slugifyName: true,
         },
-        skip: skip,
-        take: limit,
-        // TODO: total data count 
     });
-
-    // TODO: pagination headers
 
     res.status(200).json({
         success: true,
@@ -66,22 +59,30 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     });
 });
 
-// Child of faculty 
+// *Child of faculty 
 exports.create = asyncHandler(async (req, res, next) => {
 
-    console.log(req.body);
+    const facultyId = parseInt(req.params.facultyId);
+    req.body.facultyId = facultyId
+
     const departmentModel = new Department(req.body);
-    console.log(departmentModel.name);
-    departmentModel.facultyId = parseInt(req.params.facultyId);
+
     departmentModel.slugifyName = slugify(departmentModel.name, {
         lower: true,
     });
 
-    console.log(departmentModel);
-    console.log(typeof departmentModel);
-
-    const created = await client.department.create({
+    const created = await client.departments.create({
         data: departmentModel,
+        select: {
+            id: true,
+            name: true,
+            faculty: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            }
+        },
     });
 
     res.status(200).json({
@@ -100,9 +101,8 @@ exports.updateById = asyncHandler(async (req, res, next) => {
             lower: true
         });
     }
-    console.log();
 
-    const updated = await client.department.update({
+    const updated = await client.departments.update({
         where: {
             id: id,
         },
@@ -118,7 +118,7 @@ exports.updateById = asyncHandler(async (req, res, next) => {
 exports.deleteById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const deleted = await client.department.delete({
+    await client.departments.delete({
         where: {
             id: id,
         },
@@ -126,7 +126,6 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: `${deleted.name} başarıyla silindi.`,
-    })
+    });
 
 });
