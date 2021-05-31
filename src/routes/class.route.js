@@ -5,8 +5,12 @@ const updateDto = require('../models/class/dtos/class-update.dto');
 const createDto = require('../models/class/dtos/class-create.dto');
 const classFilteringDto = require('../models/class/dtos/class-filtering.dto');
 
+const router = express.Router({ mergeParams: true });
 
-const router = express.Router();
+// *Child route
+const examRoute = require('./exam.route');
+
+router.use('/:classId/exams', examRoute);
 
 router.route('/')
     .get(jwtAuthentication, authorize('ADMIN'), classFilteringDto, getAll)
