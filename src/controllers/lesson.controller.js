@@ -7,10 +7,6 @@ const { Class } = require('../models/class/class.model');
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    // ?Is there another way better instead of taking instance of class
-    const classModel = new Class();
-    class_.fillYearAndSession();
-
     const lesson = await client.lessons.findUnique({
         where: {
             id: id,
@@ -25,30 +21,6 @@ exports.getById = asyncHandler(async (req, res, next) => {
                 select: {
                     id: true,
                     name: true,
-                },
-            },
-            classes: {
-                where: {
-                    session: classModel.session,
-                    year: classModel.year,
-                },
-                select: {
-                    // !This line of query may cause a kind of error
-                    _count: {
-                        select: {
-                            id: true,
-                        }
-                    },
-                    id: true,
-                    year: true,
-                    session: true,
-                    status: true,
-                    teacher: {
-                        select: {
-                            firsName: true,
-                            lastName: true,
-                        },
-                    },
                 },
             },
         },
@@ -67,10 +39,6 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 
     const departmentId = parseInt(req.params.departmentId);
 
-    // ?Is there...
-    const classModel = new Class();
-    classModel.fillYearAndSession();
-
     const lessons = await client.lessons.findMany({
         where: {
             departmentId: departmentId,
@@ -79,22 +47,6 @@ exports.getAll = asyncHandler(async (req, res, next) => {
             id: true,
             name: true,
             code: true,
-            credit: true,
-            grade: true,
-            classes: {
-                where: {
-                    session: classModel.session,
-                    year: classModel.year,
-                },
-                select: {
-                    // !This line of query may cause a kind of error
-                    _count: {
-                        select: {
-                            id: true
-                        }
-                    }
-                },
-            },
         },
     });
 
@@ -177,30 +129,6 @@ exports.updateById = asyncHandler(async (req, res, next) => {
                 select: {
                     id: true,
                     name: true,
-                },
-            },
-            classes: {
-                where: {
-                    session: classModel.session,
-                    year: classModel.year,
-                },
-                select: {
-                    // !This line of query may cause a kind of error
-                    _count: {
-                        select: {
-                            id: true,
-                        }
-                    },
-                    id: true,
-                    year: true,
-                    session: true,
-                    status: true,
-                    teacher: {
-                        select: {
-                            firsName: true,
-                            lastName: true,
-                        },
-                    },
                 },
             },
         },

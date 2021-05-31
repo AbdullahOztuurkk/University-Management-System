@@ -14,13 +14,6 @@ exports.getById = asyncHandler(async (req, res, next) => {
         select: {
             id: true,
             name: true,
-            lessons: {
-                select: {
-                    id: true,
-                    name: true,
-                    code: true,
-                },
-            },
             faculty: {
                 select: {
                     id: true,
@@ -107,6 +100,16 @@ exports.updateById = asyncHandler(async (req, res, next) => {
             id: id,
         },
         data: departmentModel,
+        select: {
+            id: true,
+            name: true,
+            faculty: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            }
+        },
     });
 
     res.status(200).json({
