@@ -35,28 +35,6 @@ exports.getById = asyncHandler(async (req, res, next) => {
                     grade: true,
                 },
             },
-            studentClasses: {
-                select: {
-                    // !This line of query may cause a kind of error
-                    _count: {
-                        id: true,
-                    },
-                    id: true,
-                    student: {
-                        select: {
-                            firsName: true,
-                            lastName: true,
-                        },
-                    },
-                    exams: {
-                        select: {
-                            id: true,
-                            type: true,
-                            score: true,
-                        },
-                    },
-                },
-            },
         },
     });
 
@@ -67,13 +45,53 @@ exports.getById = asyncHandler(async (req, res, next) => {
 
 });
 
+exports.getAllStudents = asyncHandler(async (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    const students = await client.studentClasses.findMany({
+        where: {
+            classId: id,
+        },
+        select: {
+            id: true,
+            average: true,
+            letterScore: true,
+            result: true,
+            student: {
+                select: {
+                    id: true,
+                    firsName: true,
+                    lastName: true,
+                },
+            },
+            exams: {
+                select: {
+                    id: true,
+                    type: true,
+                    score: true,
+                },
+            },
+        },
+    });
+
+    res.status(200).json({
+        success: true,
+        datas: students,
+    })
+});
+
+// TODO: Pagination
 // *Child of lesson
 exports.getAll = asyncHandler(async (req, res, next) => {
+
     const lessonId = parseInt(req.params.lessonId);
 
     const classes = await client.classes.findMany({
         where: {
             lessonId: lessonId,
+            status: req.query.status,
+            year: req.query.year,
+            session: req.query.session,
         },
         select: {
             id: true,
@@ -108,51 +126,7 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     });
 });
 
-exports.getAllOpened = asyncHandler(async (req, res, next) => {
-    const departmentId = parseInt(req.params.departmentId);
-
-    const classes = await client.classes.findMany({
-        where: {
-            status: 'OPENED',
-            lesson: {
-                department: {
-                    id: departmentId
-                },
-            },
-        },
-        select: {
-            id: true,
-            session: true,
-            year: true,
-            status: true,
-            teacher: {
-                select: {
-                    id: true,
-                    firsName: true,
-                    lastName: true,
-                    teacherField: {
-                        select: {
-                            qualification: true,
-                        },
-                    },
-                },
-            },
-            lesson: {
-                select: {
-                    id: true,
-                    name: true,
-                    code: true,
-                },
-            },
-        },
-    });
-
-    res.status(200).json({
-        success: true,
-        datas: classes,
-    });
-});
-
+// TODO: Pagination
 // *Child of lesson
 exports.create = asyncHandler(async (req, res, next) => {
     const lessonId = parseInt(req.params.lessonId);
@@ -229,24 +203,6 @@ exports.updateById = asyncHandler(async (req, res, next) => {
                     name: true,
                     code: true,
                     grade: true,
-                },
-            },
-            studentClasses: {
-                select: {
-                    id: true,
-                    student: {
-                        select: {
-                            firsName: true,
-                            lastName: true,
-                        },
-                    },
-                    exams: {
-                        select: {
-                            id: true,
-                            type: true,
-                            score: true,
-                        },
-                    },
                 },
             },
         },
