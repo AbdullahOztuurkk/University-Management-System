@@ -2,16 +2,18 @@ const ErrorResponse = require('../../../utils/ErrorResponse');
 const options = require('../../dto-options');
 const joi = require('joi');
 
-function classUpdateDto(req, res, next) {
+function classCreateDto(req, res, next) {
     const schema = {
         body: joi.object({
             teacherId: joi.number()
-                .min(1),
+                .min(1)
+                .required(),
             status: joi.string()
                 .valid('OPENED', 'CLOSED'),
-
         }),
     }
+
+
 
     const { error, value } = schema.body.validate(req.body, options);
 
@@ -22,4 +24,4 @@ function classUpdateDto(req, res, next) {
     next();
 }
 
-module.exports = classUpdateDto;
+module.exports = classCreateDto;
