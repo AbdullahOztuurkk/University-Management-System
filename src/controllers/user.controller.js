@@ -184,7 +184,10 @@ exports.getJoinedLessons = asyncHandler(async (req, res, next) => {
     const userId = req.user.id;
 
 	const lessons = await client.userLesson.findMany({
-		select: {
+		where: {
+            userId: userId,
+        },
+        select: {
 			season: true,
 			average: true,
 			lesson: {
@@ -194,12 +197,10 @@ exports.getJoinedLessons = asyncHandler(async (req, res, next) => {
 					name: true,
 					status: true,
 				},
-				where: {
-					userId: userId,
-				},
 			},
-			exams: true,
-		},
+            userId:true
+        },
+        
 	});
 
 	res.status(200).json({
