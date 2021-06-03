@@ -78,9 +78,12 @@ exports.User = class {
         });
     }
 
-    async hashPassword() {
-        this.pwdSalt = await bcyrpt.genSalt(10);
-        this.pwdHash = await bcyrpt.hash(this.pwd, this.pwdSalt);
+    hashPassword() {
+        console.log(`pwd : ${this.pwd}`);
+        this.pwdSalt = bcyrpt.genSaltSync(10);
+        console.log(`Salt: ${this.pwdSalt}`);
+        this.pwdHash = bcyrpt.hashSync(this.pwd, this.pwdSalt);
+        console.log(`Hash: ${this.pwdHash}`);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);

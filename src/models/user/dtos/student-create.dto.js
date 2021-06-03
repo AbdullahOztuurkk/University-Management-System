@@ -36,6 +36,7 @@ function studentCreateDto(req, res, next) {
         next(new ErrorResponse(`${error.message}`, 400));
     }
     req.body = value;
+    req.body.role = 'STUDENT';
     next();
 
 }
