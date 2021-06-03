@@ -49,26 +49,32 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const exams = await client.Exam.findMany({
+    const exams = await client.exam.findMany({
         select: {
             type:true,
             score:true,
             announcementDate:true,
-            userLesson:{
-                user:{
-                    firstName:true,
-                    lastName:true,
-                    id:true,
+            UserLesson:{
+                select:{
+                    user:{
+                        select:{
+                            firstName:true,
+                            lastName:true,
+                            id:true,
+                        },
+                    },
+                    lesson:{
+                        select:{
+                            name:true,
+                            code:true,
+                            credit:true
+                        }
+                    }
                 },
-                lesson:{
-                    name:true,
-                    code:true,
-                    credit:true
-                },
-                where:{
-                    id:userId,
-                }
             },
+        },
+        where:{
+            id:userId,
         },
         skip: skip,
         take: limit,
