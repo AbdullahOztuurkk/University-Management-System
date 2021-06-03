@@ -14,7 +14,7 @@ exports.jwtAuthentication = asyncHandler(async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, constants.JWT_SECRET);
 
-        const user = await client.user.findUnique({
+        const user = await client.users.findUnique({
             where: {
                 id: decoded.id
             },
