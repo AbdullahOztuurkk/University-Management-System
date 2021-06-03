@@ -14,7 +14,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Email ve şifre boş bırakılamaz.', 400));
     }
 
-    const user = await client.user.findUnique({
+    const user = await client.users.findUnique({
         where: {
             email: email,
         },
