@@ -101,15 +101,6 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 
     const classId = parseInt(req.params.classId);
 
-    const s = await client.exams.findMany({
-        where: {
-            studentClass: {
-
-            },
-            type
-        }
-    })
-
     const exams = await paginate(req, res, client.exams, {
         studentClass: {
             classId: classId,
