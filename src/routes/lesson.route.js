@@ -3,7 +3,7 @@ const { getAll, getById, create, deleteById, updateById, getAllActive, open } = 
 const { jwtAuthentication, authorize } = require('../middleware/auth');
 const updateDto = require('../models/lesson/dtos/lesson-update-dto');
 const createDto = require('../models/lesson/dtos/lesson-create.dto');
-
+const filteringDto = require('../models/lesson/dtos/lesson-filtering.dto');
 
 const router = express.Router({ mergeParams: true });
 
@@ -17,6 +17,6 @@ router.route('/:id')
     .delete(deleteById);
 router.route('/')
     .post(createDto, create)
-    .get(getAll);
+    .get(filteringDto, getAll);
 
 module.exports = router;

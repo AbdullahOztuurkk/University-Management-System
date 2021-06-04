@@ -3,7 +3,7 @@ const { create, getAll, getById, updateById, deleteById, getAllStudents, addStud
 const { jwtAuthentication, authorize } = require('../middleware/auth');
 const updateDto = require('../models/class/dtos/class-update.dto');
 const createDto = require('../models/class/dtos/class-create.dto');
-const classFilteringDto = require('../models/class/dtos/class-filtering.dto');
+const filteringDto = require('../models/class/dtos/class-filtering.dto');
 
 const router = express.Router({ mergeParams: true });
 
@@ -13,7 +13,7 @@ const examRoute = require('./exam.route');
 router.use('/:classId/exams', examRoute);
 
 router.route('/')
-    .get(jwtAuthentication, authorize('ADMIN'), classFilteringDto, getAll)
+    .get(jwtAuthentication, authorize('ADMIN'), filteringDto, getAll)
     .post(jwtAuthentication, authorize('ADMIN'), createDto, create);
 
 router.route('/:id')
