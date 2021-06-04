@@ -20,7 +20,7 @@ model faculties {
 model departments {
   id                 Int                  @id @default(autoincrement())
   name               String               @db.VarChar(50)
-  slugifyName        String               @db.VarChar(50)
+  slugifyName        String               @unique @db.VarChar(50)
   facultyId          Int
   faculty            faculties            @relation(fields: [facultyId], references: [id])
   studentDepartments studentDepartments[]
@@ -44,7 +44,7 @@ model lessons {
 
 model users {
   id                 Int                  @id @default(autoincrement())
-  firsName           String               @db.VarChar(50)
+  firstName          String               @db.VarChar(50)
   lastName           String               @db.VarChar(50)
   email              String               @unique @db.VarChar(100)
   role               USER_ROLE
@@ -70,7 +70,7 @@ model teacherFields {
 model studentFields {
   status    STUDENT_STATUS @default(ACTIVE)
   grade     Int            @default(1)
-  gno       Decimal?       @default(0.00)
+  gno       Decimal?       @default(0.00) @db.Decimal
   studentId Int
   student   users          @relation(fields: [studentId], references: [id])
 
