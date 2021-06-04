@@ -2,8 +2,9 @@ const { client } = require('../config/prisma-config');
 const { Faculty } = require('../models/faculty/faculty.model');
 const asyncHandler = require('../middleware/async');
 const { default: slugify } = require("slugify");
+const { paginate } = require('../utils/pagination');
 
-// TODO: Pagination 
+// BUG: Prisma P2001 error can not be handled. Expected return code 404 
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
@@ -26,16 +27,16 @@ exports.getById = asyncHandler(async (req, res, next) => {
 
 exports.getAll = asyncHandler(async (req, res, next) => {
 
-    const faculty = await client.faculties.findMany({
-        select: {
-            id: true,
-            name: true,
-        },
+    const faculties = await paginate(req, res, client.faculties, undefined, {
+        id: true,
+        name: true,
+        slugifyName: true,
     });
 
     res.status(200).json({
         success: true,
-        datas: faculty,
+        datas: faculties,
+        pagination: res.pagination,
     });
 });
 
@@ -46,7 +47,7 @@ exports.create = asyncHandler(async (req, res, next) => {
         lower: true,
     });
 
-    const created = await client.faculty.create({
+    const created = await client.faculties.create({
         data: facultyModel,
     });
 

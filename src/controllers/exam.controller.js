@@ -3,6 +3,7 @@ const { Exam } = require('../models/exam/exam.model');
 const { client } = require('../config/prisma-config');
 const { User } = require('../models/user/user.model');
 const ErrorResponse = require("../utils/ErrorResponse");
+const { paginate } = require("../utils/pagination");
 
 
 exports.create = asyncHandler(async (req, res, next) => {
@@ -95,29 +96,37 @@ exports.getById = asyncHandler(async (req, res, next) => {
     });
 });
 
-// TODO: Pagination
+
 exports.getAll = asyncHandler(async (req, res, next) => {
 
     const classId = parseInt(req.params.classId);
 
-    const exams = await client.exams.findMany({
+    const s = await client.exams.findMany({
         where: {
             studentClass: {
-                classId: classId,
+
             },
+            type
+        }
+    })
+
+    const exams = await paginate(req, res, client.exams, {
+        studentClass: {
+            classId: classId,
+            studentId: req.query.studentId,
         },
-        select: {
-            id: true,
-            score: true,
-            type: true,
-            studentClass: {
-                select: {
-                    id: true,
-                    student: {
-                        select: {
-                            firsName: true,
-                            lastName: true,
-                        },
+        type: req.query.type,
+    }, {
+        id: true,
+        score: true,
+        type: true,
+        studentClass: {
+            select: {
+                id: true,
+                student: {
+                    select: {
+                        firsName: true,
+                        lastName: true,
                     },
                 },
             },
@@ -127,6 +136,7 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         datas: exams,
+        pagination: res.pagination,
     });
 });
 

@@ -2,8 +2,8 @@ const { client } = require("../config/prisma-config");
 const asyncHandler = require("../middleware/async");
 const { Department } = require('../models/department/department.model');
 const { default: slugify } = require('slugify');
+const { paginate } = require("../utils/pagination");
 
-// TODO: Pagination
 exports.getById = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
@@ -36,19 +36,18 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 
     const facultyId = parseInt(req.params.facultyId);
 
-    const departments = await client.departments.findMany({
-        where: {
-            facultyId: facultyId,
-        },
-        select: {
-            id: true,
-            name: true,
-        },
+    const departments = await paginate(req, res, client.departments, {
+        facultyId: facultyId,
+    }, {
+        id: true,
+        name: true,
+        slugifyName: true,
     });
 
     res.status(200).json({
         success: true,
         datas: departments,
+        pagination: res.pagination,
     });
 });
 
@@ -57,6 +56,7 @@ exports.create = asyncHandler(async (req, res, next) => {
 
     const facultyId = parseInt(req.params.facultyId);
     req.body.facultyId = facultyId
+    console.log(JSON.stringify(req.body));
 
     const departmentModel = new Department(req.body);
 

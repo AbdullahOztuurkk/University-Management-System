@@ -1,6 +1,7 @@
 const asyncHandler = require('../middleware/async');
 const { Class } = require('../models/class/class.model');
 const { client } = require('../config/prisma-config');
+const { paginate } = require('../utils/pagination');
 
 exports.getById = asyncHandler(async (req, res, next) => {
 
@@ -48,28 +49,25 @@ exports.getById = asyncHandler(async (req, res, next) => {
 exports.getAllStudents = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
 
-    const students = await client.studentClasses.findMany({
-        where: {
-            classId: id,
-        },
-        select: {
-            id: true,
-            average: true,
-            letterScore: true,
-            result: true,
-            student: {
-                select: {
-                    id: true,
-                    firsName: true,
-                    lastName: true,
-                },
+    const students = await paginate(req, res, client.studentClasses, {
+        classId: id
+    }, {
+        id: true,
+        average: true,
+        letterScore: true,
+        result: true,
+        student: {
+            select: {
+                id: true,
+                firsName: true,
+                lastName: true,
             },
-            exams: {
-                select: {
-                    id: true,
-                    type: true,
-                    score: true,
-                },
+        },
+        exams: {
+            select: {
+                id: true,
+                type: true,
+                score: true,
             },
         },
     });
@@ -77,45 +75,42 @@ exports.getAllStudents = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         datas: students,
+        pagination: res.pagination,
     })
 });
 
-// TODO: Pagination
 // *Child of lesson
 exports.getAll = asyncHandler(async (req, res, next) => {
 
     const lessonId = parseInt(req.params.lessonId);
 
-    const classes = await client.classes.findMany({
-        where: {
-            lessonId: lessonId,
-            status: req.query.status,
-            year: req.query.year,
-            session: req.query.session,
-        },
-        select: {
-            id: true,
-            session: true,
-            year: true,
-            status: true,
-            teacher: {
-                select: {
-                    id: true,
-                    firsName: true,
-                    lastName: true,
-                    teacherField: {
-                        select: {
-                            qualification: true,
-                        }
+    const classes = await paginate(req, res, client.classes, {
+        lessonId: lessonId,
+        status: req.query.status,
+        year: req.query.year,
+        session: req.query.session,
+    }, {
+        id: true,
+        session: true,
+        year: true,
+        status: true,
+        teacher: {
+            select: {
+                id: true,
+                firsName: true,
+                lastName: true,
+                teacherField: {
+                    select: {
+                        qualification: true,
                     }
-                },
+                }
             },
-            lesson: {
-                select: {
-                    id: true,
-                    name: true,
-                    code: true,
-                },
+        },
+        lesson: {
+            select: {
+                id: true,
+                name: true,
+                code: true,
             },
         },
     });
@@ -123,10 +118,10 @@ exports.getAll = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         datas: classes,
+        pagination: res.pagination,
     });
 });
 
-// TODO: Pagination
 // *Child of lesson
 exports.create = asyncHandler(async (req, res, next) => {
     const lessonId = parseInt(req.params.lessonId);
@@ -228,6 +223,7 @@ exports.deleteById = asyncHandler(async (req, res, next) => {
     });
 });
 
+// ??Putting this method into students better idea??
 exports.addStudent = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
     const studentId = parseInt(req.body.studentId);
@@ -266,6 +262,7 @@ exports.addStudent = asyncHandler(async (req, res, next) => {
     });
 });
 
+// ??Putting this method into students better idea??
 // ?studentId is taken from req.body 
 exports.removeStudent = asyncHandler(async (req, res, next) => {
     const id = parseInt(req.params.id);
