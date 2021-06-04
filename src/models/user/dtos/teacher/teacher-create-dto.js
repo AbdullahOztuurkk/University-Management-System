@@ -1,8 +1,8 @@
 const joi = require('joi');
-const ErrorResponse = require('../../../utils/ErrorResponse');
-const options = require('../../dto-options');
+const ErrorResponse = require('../../../../utils/ErrorResponse');
+const options = require('../../../dto-options');
 
-function studentCreateDto(req, res, next) {
+function teacherCreateDto(req, res, next) {
 
     const schema = {
         body: joi.object({
@@ -20,13 +20,14 @@ function studentCreateDto(req, res, next) {
             email: joi.string()
                 .email()
                 .required(),
-            studentField: joi.object({
-                status: joi.string()
-                    .valid('ACTIVE', 'INACTIVE', 'GRADUATED', 'LEFT'),
-                grade: joi.number()
-                    .min(0)
-                    .max(6),
-            })
+            teacherField: joi.object({
+                qualification: joi.string()
+                    .valid('PROF', 'DOCENT', 'LECTURER', 'ASSISTANT')
+                    .required(),
+                website: joi.string()
+                    .max(100)
+                    .required(),
+            }),
         }),
     }
 
@@ -36,9 +37,9 @@ function studentCreateDto(req, res, next) {
         next(new ErrorResponse(`${error.message}`, 400));
     }
     req.body = value;
-    req.body.role = 'STUDENT';
+    req.body.role = 'TEACHER';
     next();
 
 }
 
-module.exports = studentCreateDto;
+module.exports = teacherCreateDto;

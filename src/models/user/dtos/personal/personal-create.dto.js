@@ -1,6 +1,6 @@
 const joi = require('joi');
-const ErrorResponse = require('../../../utils/ErrorResponse');
-const options = require('../../dto-options');
+const ErrorResponse = require('../../../../utils/ErrorResponse');
+const options = require('../../../dto-options');
 
 function userCreateDto(req, res, next) {
 
