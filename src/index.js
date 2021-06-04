@@ -26,10 +26,10 @@ connectDb();
 
 
 app.use('/v1/auth', auth);
-app.use('/v1/faculty', faculty);
-app.use('/v1/department', department);
-app.use('/v1/user',user);
-app.use('/v1/exam',exam);
+app.use('/v1/faculties', faculty);
+app.use('/v1/departments', department);
+app.use('/v1/users',user);
+app.use('/v1/exams',exam);
 
 app.use(errorHandler);
 
