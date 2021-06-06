@@ -11,11 +11,11 @@ const router = express.Router();
 router.use(jwtAuthentication);
 
 router.route('/:id')
-    .get(authorize('STUDENT'),getById)
-    .patch(authorize('TEACHER'), updateById)
-    .delete(authorize('TEACHER'),deleteById);
+    .get(getById)
+    .patch(authorize('TEACHER','ADMIN'), updateById)
+    .delete(authorize('TEACHER','ADMIN'),deleteById);
 router.route('/')
-    .post(authorize('TEACHER'),createDto, create)
-    .get(authorize('STUDENT'),getAll);
+    .post(authorize('TEACHER','ADMIN'),createDto, create)
+    .get(getAll);
 
 module.exports = router;
