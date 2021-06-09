@@ -37,7 +37,7 @@ exports.getById = asyncHandler(async (req, res, next) => {
 // Child of department
 exports.getAll = asyncHandler(async (req, res, next) => {
 
-    const departmentId = parseInt(req.params.departmentId);
+    const departmentId = req.query.departmentId;
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -45,9 +45,10 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 
     const lessons = await client.lesson.findMany({
         where: {
-            departmentId: departmentId,
+            departmentId: parseInt(departmentId),
         },
         select: {
+            departmentId:true,
             id: true,
             name: true,
             code: true,
