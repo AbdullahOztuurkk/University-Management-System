@@ -10,6 +10,7 @@ const {
 	getStudents,
 	getTeachers,
 	updateById,
+	getUserLessons,
 } = require("../controllers/user.controller");
 const { jwtAuthentication, authorize } = require("../middleware/auth");
 const createUserLessonDto = require("../models/userlesson/dtos/create-userlesson.dto");
@@ -25,11 +26,14 @@ router.route("/teachers").get(getTeachers);
 
 
 router
+	.route("/lessons/:id")
+	.get(authorize("TEACHER","ADMIN"), getUserLessons);
+	
+router
 	.route("/lessons")
-	.get(authorize("STUDENT"), getJoinedLessons)
+	.get(authorize("STUDENT","TEACHER","ADMIN"), getJoinedLessons)
 	.post(authorize("STUDENT"), joinOpenedLesson)
 	.delete(authorize("STUDENT"), leaveOpenedLesson);
-
 
 router
 	.route("/")
