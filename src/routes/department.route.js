@@ -15,9 +15,9 @@ router.use(authorize('ADMIN'));
 router.route('/:id')
     .get(getById)
     .patch(updateDto, updateById)
-    .delete(deleteById);
+    .delete(deleteById)
+    .post(createDto, create);
 router.route('/')
-    .post(createDto, create)
     .get(getAll);
 
 module.exports = router;
