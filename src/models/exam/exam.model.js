@@ -4,6 +4,7 @@ exports.Exam = class {
     constructor(object) {
         Object.assign(this, object);
     }
+    id;
     type;
     score;
     announcementDate;
