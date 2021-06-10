@@ -69,10 +69,8 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 // Child of faculty 
 exports.create = asyncHandler(async (req, res, next) => {
 
-    console.log(req.body);
     const departmentModel = new Department(req.body);
-    console.log(departmentModel.name);
-    departmentModel.facultyId = parseInt(req.params.facultyId);
+    departmentModel.facultyId = parseInt(req.params.id);
     departmentModel.slugifyName = slugify(departmentModel.name, {
         lower: true,
     });
