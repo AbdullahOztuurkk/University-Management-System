@@ -71,7 +71,7 @@ exports.getAll = asyncHandler(async (req, res, next) => {
 // Child of department
 exports.create = asyncHandler(async (req, res, next) => {
 
-    const departmentId = parseInt(req.params.departmentId);
+    const departmentId = parseInt(req.params.id);
 
     const lessonModel = new Lesson(req.body);
     lessonModel.departmentId = departmentId;
