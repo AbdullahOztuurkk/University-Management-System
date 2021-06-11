@@ -20,10 +20,9 @@ exports.User = class {
     userDepartments; // relation field;
     departmentId; // To register at initialCreate
 
-    async hashPassword() {
-        const personalPwd = slugify(this.firstName, { replacement: '' });
-        this.pwdSalt = await bcyrpt.genSalt(10);
-        this.pwdHash = await bcyrpt.hash(personalPwd, this.pwdSalt);
+    hashPassword() {
+        this.pwdSalt = bcyrpt.genSaltSync(10);
+        this.pwdHash = bcyrpt.hashSync(this.pwd, this.pwdSalt);
     }
     async matchPassword(pwd) {
         const pwdHash = await bcyrpt.hash(pwd, this.pwdSalt);

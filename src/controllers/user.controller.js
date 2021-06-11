@@ -6,10 +6,20 @@ const ErrorResponse = require("../utils/ErrorResponse");
 
 exports.create = asyncHandler(async (req, res, next) => {
 	const userModel = new User(req.body);
-	userModel.assignInformations();
 	userModel.hashPassword();
+	userModel.assignInformations();
+	console.log(userModel);
 	const created = await client.user.create({
-		data: userModel,
+		data: {
+			firstName: userModel.firstName,
+			lastName: userModel.lastName,
+			email: userModel.email,
+			status: userModel.status,
+			role: userModel.role,
+			pwdHash: userModel.pwdHash,
+			pwdSalt: userModel.pwdSalt,
+			departmentId: userModel.departmentId,
+		},
 	});
 	if (userModel.departmentId && !userModel.role === "ADMIN") {
 		await client.userDepartment.create({
