@@ -13,6 +13,9 @@ function userCreateDto(req, res, next) {
             role: joi.string()
                 .valid('ADMIN', 'TEACHER', 'STUDENT')
                 .required(),
+            pwd: joi.string()
+                .min(4)
+                .max(16),
             departmentId: joi.number(),
         }),
     }

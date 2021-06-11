@@ -13,7 +13,7 @@ const {
 	getUserLessons,
 } = require("../controllers/user.controller");
 const { jwtAuthentication, authorize } = require("../middleware/auth");
-const createUserLessonDto = require("../models/userlesson/dtos/create-userlesson.dto");
+const createDto = require("../models/user/dtos/user-create.dto");
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ router
 
 router
 	.route("/")
-	.post(authorize("ADMIN"), createUserLessonDto, create)
+	.post(authorize("ADMIN"), createDto, create)
 	.get(getAll);
 
 router
