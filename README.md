@@ -1,4 +1,4 @@
-# University-Management-System
+# University Management System
 This project has been developed based on the Sivas Cumhuriyet University management system.
 
 ## Used Technologies
