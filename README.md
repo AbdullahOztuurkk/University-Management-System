@@ -1,5 +1,11 @@
 # University-Management-System
-University Management System developed with Nodejs
+This project has been developed based on the Sivas Cumhuriyet University management system.
+
+## Used Technologies
+**Server** : NodeJS, Express, Prisma ORM
+
+**Database** : Postresql
+
 
 ## Prisma ORM
 
@@ -12,10 +18,22 @@ npx prisma migrate dev
 
 ## User password which added manually to db
 
-There is not a registry controller because of only admin can manipulate users. So, you might need a test user and we are friendly developers therefore we put a test password below of text for you <3
+There is not a registry controller because of only admin can manipulate users. So, you might need a test user and we are friendly developers therefore we put a test password below of text for you.
 
 ```JSON
 "pwd" : "1234",
 "pwdHash" : "$2a$10$cVooIe/7i/8mZ6LwfQR/3.cG.TUqUUaz5w6QEwvearyTvmkINfTqu",
 "pwdSalt" : "$2a$10$cVooIe/7i/8mZ6LwfQR/3."
 ```
+
+## Installation
+
+```bash
+    # Install All Dependencies
+    npm install
+    
+    # Run in Dev Mode
+    npm run dev
+```
+
+  
