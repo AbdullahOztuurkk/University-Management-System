@@ -4,7 +4,7 @@ This project has been developed based on the Sivas Cumhuriyet University managem
 ## Used Technologies
 **Server** : NodeJS, Express, Prisma ORM
 
-**Database** : Postresql
+**Database** : Postgresql
 
 
 ## Prisma ORM
